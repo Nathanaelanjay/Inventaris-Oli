@@ -1,0 +1,192 @@
+CREATE DATABASE IF NOT EXISTS inventoryoli;
+USE inventoryoli;
+
+-- ========================
+-- USERS 
+-- ========================
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ========================
+-- PEMASOK
+-- ========================
+CREATE TABLE pemasok (
+    pemasok_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_pemasok VARCHAR(255) NOT NULL,
+    alamat VARCHAR(255) NOT NULL,
+    kontak VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ========================
+-- PELANGGAN
+-- ========================
+CREATE TABLE pelanggan (
+    pelanggan_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_bengkel VARCHAR(255) NOT NULL,
+    no_telp VARCHAR(20) NOT NULL,
+    alamat VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ========================
+-- KATEGORI
+-- ========================
+CREATE TABLE kategori (
+    kategori_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_kategori VARCHAR(255) NOT NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ========================
+-- PRODUK (PRODUCTS)
+-- ========================
+CREATE TABLE produk (
+    produk_id INT AUTO_INCREMENT PRIMARY KEY,
+    kode_barang INT NOT NULL,
+    nama_barang VARCHAR(255) NOT NULL,
+    stok INT NOT NULL,
+    stok_minimum INT NOT NULL,
+    harga_beli INT NOT NULL,
+    harga_jual INT NOT NULL,
+    kategori_id INT NOT NULL,
+    pemasok_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (kategori_id) REFERENCES kategori(kategori_id),
+    FOREIGN KEY (pemasok_id) REFERENCES pemasok(pemasok_id)
+);
+
+-- ========================
+-- BARANG MASUK
+-- ========================
+CREATE TABLE barang_masuk (
+    barang_masuk_id INT AUTO_INCREMENT PRIMARY KEY,
+    tanggal DATETIME DEFAULT CURRENT_TIMESTAMP,
+    jumlah INT NOT NULL,
+    harga_beli INT NOT NULL,
+    total INT NOT NULL,
+    user_id INT NOT NULL,
+    produk_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (produk_id) REFERENCES produk(produk_id)
+);
+
+-- ========================
+-- BARANG KELUAR
+-- ========================
+CREATE TABLE barang_keluar (
+    barang_keluar_id INT AUTO_INCREMENT PRIMARY KEY,
+    tanggal DATETIME DEFAULT CURRENT_TIMESTAMP,
+    jumlah INT NOT NULL,
+    harga_jual INT NOT NULL,
+    total INT NOT NULL,
+    produk_id INT NOT NULL,
+    user_id INT NOT NULL,
+    pelanggan_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (produk_id) REFERENCES produk(produk_id),
+    FOREIGN KEY (pelanggan_id) REFERENCES pelanggan(pelanggan_id)
+);
+
+-- ========================
+-- PEMASUKAN
+-- ========================
+CREATE TABLE pemasukan (
+    pemasukan_id INT AUTO_INCREMENT PRIMARY KEY,
+    jumlah INT NOT NULL,
+    tanggal DATETIME DEFAULT CURRENT_TIMESTAMP,
+    keterangan VARCHAR(255) NOT NULL,
+    barang_keluar_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (barang_keluar_id) REFERENCES barang_keluar(barang_keluar_id)
+);
+
+-- ========================
+-- PENGELUARAN
+-- ========================
+CREATE TABLE pengeluaran (
+    pengeluaran_id INT AUTO_INCREMENT PRIMARY KEY,
+    jumlah INT NOT NULL,
+    tanggal DATETIME DEFAULT CURRENT_TIMESTAMP,
+    keterangan VARCHAR(255) NOT NULL,
+    barang_masuk_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (barang_masuk_id) REFERENCES barang_masuk(barang_masuk_id)
+);
+
+-- ========================
+-- HUTANG PEMBELIAN
+-- ========================
+CREATE TABLE hutang_pembelian (
+    hutang_id INT AUTO_INCREMENT PRIMARY KEY,
+    
+    barang_masuk_id INT NOT NULL,
+    
+    total_hutang INT NOT NULL,
+    sisa_hutang INT NOT NULL,
+    
+    jumlah_bayar INT DEFAULT 0,
+    total_terbayar INT DEFAULT 0,
+    
+    tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tanggal_jatuh_tempo DATE,
+    tanggal_bayar_terakhir DATE,
+    
+    status VARCHAR(50),
+    keterangan VARCHAR(255),
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (barang_masuk_id) REFERENCES barang_masuk(barang_masuk_id)
+);
+
+-- ========================
+-- PIUTANG PELANGGAN
+-- ========================
+CREATE TABLE piutang_pelanggan (
+    piutang_id INT AUTO_INCREMENT PRIMARY KEY,
+    
+    barang_keluar_id INT NOT NULL,
+    
+    total_piutang INT NOT NULL,
+    sisa_piutang INT NOT NULL,
+    
+    jumlah_bayar INT DEFAULT 0,
+    total_terbayar INT DEFAULT 0,
+    
+    tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tanggal_jatuh_tempo DATE,
+    tanggal_bayar_terakhir DATE,
+    
+    status VARCHAR(50),
+    keterangan VARCHAR(255),
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (barang_keluar_id) REFERENCES barang_keluar(barang_keluar_id)
+);

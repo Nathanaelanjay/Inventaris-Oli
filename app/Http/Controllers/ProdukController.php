@@ -76,7 +76,17 @@ class ProdukController extends Controller
         ]);
 
         $produk = Produk::findOrFail($id);
-        $produk->update($request->all());
+
+        $produk->update([
+            'kode_barang' => $request->kode_barang,
+            'nama_barang' => $request->nama_barang,
+            'stok' => $request->stok,
+            'stok_minimum' => $request->stok_minimum,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual,
+            'kategori_id' => $request->kategori_id,
+            'pemasok_id' => $request->pemasok_id,
+        ]);
 
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil diupdate');
@@ -84,9 +94,11 @@ class ProdukController extends Controller
 
     public function destroy($id)
     {
-        Produk::destroy($id);
+        $produk = Produk::findOrFail($id);
+        $produk->delete();
 
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil dihapus');
     }
+
 }

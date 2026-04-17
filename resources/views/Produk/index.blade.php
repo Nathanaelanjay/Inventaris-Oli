@@ -166,7 +166,7 @@
                                         </td>
                                         <td class="px-4 py-3.5">
                                             <div class="flex items-center justify-center gap-2">
-                                                <button onclick='openEdit(@json($p))'
+                                                <button data-produk='@json($p)' onclick="openEdit(this)"
                                                     class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100 transition-colors">
                                                     <i class="fas fa-pen text-[10px]"></i>
                                                     Edit
@@ -215,9 +215,10 @@
     <!-- MODAL CREATE -->
     <div id="createModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal('createModal')"></div>
+
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
 
-            <!-- Modal Header -->
+            <!-- HEADER -->
             <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center">
@@ -229,93 +230,57 @@
                     </div>
                 </div>
                 <button onclick="closeModal('createModal')"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
+                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100">
                     <i class="fas fa-xmark"></i>
                 </button>
             </div>
 
-            <!-- Modal Body -->
+            <!-- FORM CREATE -->
             <form action="{{ route('produk.store') }}" method="POST" class="px-6 py-5 space-y-4">
                 @csrf
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Kode Barang</label>
-                        <input name="kode_barang" placeholder="contoh: PRD-001"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Barang</label>
-                        <input name="nama_barang" placeholder="Nama produk"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition">
-                    </div>
+                    <input name="kode_barang" placeholder="Kode Barang"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
+
+                    <input name="nama_barang" placeholder="Nama Barang"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok</label>
-                        <input name="stok" type="number" placeholder="0"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok Minimum</label>
-                        <input name="stok_minimum" type="number" placeholder="0"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition">
-                    </div>
+                    <input name="stok" type="number" placeholder="Stok"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
+
+                    <input name="stok_minimum" type="number" placeholder="Stok Minimum"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Harga Beli</label>
-                        <div class="relative">
-                            <span
-                                class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">Rp</span>
-                            <input name="harga_beli" type="number" placeholder="0"
-                                class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Harga Jual</label>
-                        <div class="relative">
-                            <span
-                                class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">Rp</span>
-                            <input name="harga_jual" type="number" placeholder="0"
-                                class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition">
-                        </div>
-                    </div>
+                    <input name="harga_beli" type="number" placeholder="Harga Beli"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
+
+                    <input name="harga_jual" type="number" placeholder="Harga Jual"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Kategori</label>
-                    <select name="kategori_id"
-                        class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition bg-white">
-                        <option value="">Pilih Kategori</option>
-                        @foreach ($kategori as $k)
-                            <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <select id="e_kategori" name="kategori_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                    @foreach ($kategori as $k)
+                        <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
+                    @endforeach
+                </select>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Pemasok</label>
-                    <select name="pemasok_id"
-                        class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition bg-white">
-                        <option value="">Pilih Pemasok</option>
-                        @foreach ($pemasok as $s)
-                            <option value="{{ $s->pemasok_id }}">{{ $s->nama_pemasok }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <select id="e_pemasok" name="pemasok_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                    @foreach ($pemasok as $s)
+                        <option value="{{ $s->pemasok_id }}">{{ $s->nama_pemasok }}</option>
+                    @endforeach
+                </select>
 
-                <!-- Modal Footer -->
-                <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-50 mt-2">
-                    <button type="button" onclick="closeModal('createModal')"
-                        class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors">
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('createModal')" class="px-4 py-2">
                         Batal
                     </button>
-                    <button type="submit"
-                        class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shadow-blue-200">
-                        Simpan Produk
+                    <button class="px-5 py-2 bg-blue-600 text-white rounded-xl">
+                        Simpan
                     </button>
                 </div>
             </form>
@@ -326,9 +291,10 @@
     <!-- MODAL EDIT -->
     <div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal('editModal')"></div>
+
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
 
-            <!-- Modal Header -->
+            <!-- HEADER -->
             <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
@@ -340,72 +306,80 @@
                     </div>
                 </div>
                 <button onclick="closeModal('editModal')"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
+                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100">
                     <i class="fas fa-xmark"></i>
                 </button>
             </div>
 
-            <!-- Modal Body -->
             <form id="editForm" method="POST" class="px-6 py-5 space-y-4">
                 @csrf
                 @method('PUT')
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Kode Barang</label>
-                        <input id="e_kode" name="kode_barang"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition">
+                        <label class="text-xs text-slate-500">Kode Barang</label>
+                        <input id="e_kode" name="kode_barang" class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
+
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Barang</label>
-                        <input id="e_nama" name="nama_barang"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition">
+                        <label class="text-xs text-slate-500">Nama Barang</label>
+                        <input id="e_nama" name="nama_barang" class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok</label>
+                        <label class="text-xs text-slate-500">Stok</label>
                         <input id="e_stok" name="stok" type="number"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition">
+                            class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
+
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Stok Minimum</label>
+                        <label class="text-xs text-slate-500">Stok Minimum</label>
                         <input id="e_stok_minimum" name="stok_minimum" type="number"
-                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition">
+                            class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Harga Beli</label>
-                        <div class="relative">
-                            <span
-                                class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">Rp</span>
-                            <input id="e_harga_beli" name="harga_beli" type="number"
-                                class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition">
-                        </div>
+                        <label class="text-xs text-slate-500">Harga Beli</label>
+                        <input id="e_harga_beli" name="harga_beli" type="number"
+                            class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
+
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Harga Jual</label>
-                        <div class="relative">
-                            <span
-                                class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">Rp</span>
-                            <input id="e_harga_jual" name="harga_jual" type="number"
-                                class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 transition">
-                        </div>
+                        <label class="text-xs text-slate-500">Harga Jual</label>
+                        <input id="e_harga_jual" name="harga_jual" type="number"
+                            class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
                 </div>
 
-                <!-- Modal Footer -->
-                <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-50 mt-2">
-                    <button type="button" onclick="closeModal('editModal')"
-                        class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors">
+                <div>
+                    <label class="text-xs text-slate-500">Kategori</label>
+                    <select id="e_kategori" name="kategori_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                        @foreach ($kategori as $k)
+                            <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-500">Pemasok</label>
+                    <select id="e_pemasok" name="pemasok_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                        @foreach ($pemasok as $s)
+                            <option value="{{ $s->pemasok_id }}">{{ $s->nama_pemasok }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('editModal')" class="px-4 py-2">
                         Batal
                     </button>
-                    <button type="submit"
-                        class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shadow-amber-200">
-                        Update Produk
+
+                    <button type="submit" class="px-5 py-2 bg-amber-500 text-white rounded-xl">
+                        Update
                     </button>
                 </div>
             </form>
@@ -413,29 +387,33 @@
     </div>
 
 
+    <!-- SCRIPT -->
     <script>
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.add('hidden');
-            document.body.style.overflow = '';
         }
 
-        function openEdit(p) {
+        function openEdit(btn) {
             document.getElementById('editModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
-            document.getElementById('editForm').action = '/produk/' + p.produk_id;
+            let data = JSON.parse(btn.dataset.produk);
 
-            document.getElementById('e_kode').value = p.kode_barang;
-            document.getElementById('e_nama').value = p.nama_barang;
-            document.getElementById('e_stok').value = p.stok;
-            document.getElementById('e_stok_minimum').value = p.stok_minimum;
-            document.getElementById('e_harga_beli').value = p.harga_beli;
-            document.getElementById('e_harga_jual').value = p.harga_jual;
+            document.getElementById('editForm').action =
+                '/produk/' + data.produk_id;
+
+            document.getElementById('e_kode').value = data.kode_barang;
+            document.getElementById('e_nama').value = data.nama_barang;
+            document.getElementById('e_stok').value = data.stok;
+            document.getElementById('e_stok_minimum').value = data.stok_minimum;
+            document.getElementById('e_harga_beli').value = data.harga_beli;
+            document.getElementById('e_harga_jual').value = data.harga_jual;
+            document.getElementById('e_kategori').value = data.kategori_id;
+            document.getElementById('e_pemasok').value = data.pemasok_id;
         }
 
         document.addEventListener('keydown', function (e) {

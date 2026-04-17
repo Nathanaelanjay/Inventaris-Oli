@@ -34,3 +34,9 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 });
+
+// KATEGORI
+Route::resource('kategori', KategoriController::class);
+
+// PEMASOK
+Route::resource('pemasok', PemasokController::class);
