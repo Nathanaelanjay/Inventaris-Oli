@@ -76,6 +76,28 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Role</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-shield text-slate-400 text-sm"></i>
+                            </div>
+
+                            <select name="role_id"
+                                class="w-full bg-white border border-slate-200 text-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 transition">
+
+                                <option value="">Pilih Role</option>
+
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->role_id }}" {{ old('role_id') == $role->role_id ? 'selected' : '' }}>
+                                        {{ $role->nama_role }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        </div>
+                    </div>
+
                     {{-- Submit --}}
                     <button type="submit"
                         class="w-full bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-sm shadow-emerald-200 text-sm mt-2">

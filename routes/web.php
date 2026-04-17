@@ -40,3 +40,7 @@ Route::resource('kategori', KategoriController::class);
 
 // PEMASOK
 Route::resource('pemasok', PemasokController::class);
+
+// BARANG MASUK
+Route::resource('barangmasuk', BarangMasukController::class);
+

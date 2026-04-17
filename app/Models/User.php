@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -13,10 +14,15 @@ class User extends Authenticatable
         'nama',
         'email',
         'password',
-        'role'
+        'role_id'
     ];
 
     protected $hidden = [
         'password'
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
 }

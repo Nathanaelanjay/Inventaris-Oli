@@ -2,16 +2,32 @@ CREATE DATABASE IF NOT EXISTS inventoryoli;
 USE inventoryoli;
 
 -- ========================
--- USERS 
+-- TABEL ROLE
+-- ========================
+CREATE TABLE role (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_role VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO role (nama_role) VALUES
+('Admin'),
+('Super Admin');
+
+-- ========================
+-- USERS
 -- ========================
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     nama VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(255) NOT NULL,
+    role_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
 
 -- ========================
@@ -22,7 +38,7 @@ CREATE TABLE pemasok (
     nama_pemasok VARCHAR(255) NOT NULL,
     alamat VARCHAR(255) NOT NULL,
     kontak VARCHAR(20) NOT NULL,
-    email VARCHAR(255) NOT NULL
+    email VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -44,20 +60,20 @@ CREATE TABLE pelanggan (
 -- ========================
 CREATE TABLE kategori (
     kategori_id INT AUTO_INCREMENT PRIMARY KEY,
-    nama_kategori VARCHAR(255) NOT NULL
+    nama_kategori VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- ========================
--- PRODUK (PRODUCTS)
+-- PRODUK
 -- ========================
 CREATE TABLE produk (
     produk_id INT AUTO_INCREMENT PRIMARY KEY,
-    kode_barang INT NOT NULL,
+    kode_barang VARCHAR(50) NOT NULL UNIQUE,
     nama_barang VARCHAR(255) NOT NULL,
-    stok INT NOT NULL,
-    stok_minimum INT NOT NULL,
+    stok INT NOT NULL DEFAULT 0,
+    stok_minimum INT NOT NULL DEFAULT 0,
     harga_beli INT NOT NULL,
     harga_jual INT NOT NULL,
     kategori_id INT NOT NULL,
@@ -102,8 +118,8 @@ CREATE TABLE barang_keluar (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (produk_id) REFERENCES produk(produk_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (pelanggan_id) REFERENCES pelanggan(pelanggan_id)
 );
 
@@ -142,22 +158,16 @@ CREATE TABLE pengeluaran (
 -- ========================
 CREATE TABLE hutang_pembelian (
     hutang_id INT AUTO_INCREMENT PRIMARY KEY,
-    
     barang_masuk_id INT NOT NULL,
-    
     total_hutang INT NOT NULL,
     sisa_hutang INT NOT NULL,
-    
     jumlah_bayar INT DEFAULT 0,
     total_terbayar INT DEFAULT 0,
-    
     tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
     tanggal_jatuh_tempo DATE,
     tanggal_bayar_terakhir DATE,
-    
     status VARCHAR(50),
     keterangan VARCHAR(255),
-    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -169,22 +179,16 @@ CREATE TABLE hutang_pembelian (
 -- ========================
 CREATE TABLE piutang_pelanggan (
     piutang_id INT AUTO_INCREMENT PRIMARY KEY,
-    
     barang_keluar_id INT NOT NULL,
-    
     total_piutang INT NOT NULL,
     sisa_piutang INT NOT NULL,
-    
     jumlah_bayar INT DEFAULT 0,
     total_terbayar INT DEFAULT 0,
-    
     tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
     tanggal_jatuh_tempo DATE,
     tanggal_bayar_terakhir DATE,
-    
     status VARCHAR(50),
     keterangan VARCHAR(255),
-    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

@@ -98,6 +98,56 @@
                         </div>
                         <span class="text-xs text-slate-400">{{ $produk->count() }} produk ditemukan</span>
                     </div>
+                    <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+                            {{-- Filter Kategori --}}
+                            <select name="kategori"
+                                class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400">
+                                <option value="">Semua Kategori</option>
+                                @foreach($kategori as $k)
+                                    <option value="{{ $k->kategori_id }}" {{ request('kategori') == $k->kategori_id ? 'selected' : '' }}>
+                                        {{ $k->nama_kategori }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            {{-- Filter Pemasok --}}
+                            <select name="pemasok"
+                                class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400">
+                                <option value="">Semua Pemasok</option>
+                                @foreach($pemasok as $s)
+                                    <option value="{{ $s->pemasok_id }}" {{ request('pemasok') == $s->pemasok_id ? 'selected' : '' }}>
+                                        {{ $s->nama_pemasok }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            {{-- Sorting Stok --}}
+                            <select name="stok"
+                                class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400">
+                                <option value="">Urutkan Stok</option>
+                                <option value="asc" {{ request('stok') == 'asc' ? 'selected' : '' }}>Terdikit ke Terbesar
+                                </option>
+                                <option value="desc" {{ request('stok') == 'desc' ? 'selected' : '' }}>Terbesar ke
+                                    Terdikit</option>
+                            </select>
+
+                            {{-- Tombol --}}
+                            <div class="flex gap-2">
+                                <button type="submit"
+                                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-xl px-4 py-2">
+                                    Filter
+                                </button>
+
+                                <a href="{{ url()->current() }}"
+                                    class="w-full text-center bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded-xl px-4 py-2">
+                                    Reset
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
@@ -110,6 +160,8 @@
                                     <th
                                         class="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
                                         Stok</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Harga Beli</th>
                                     <th class="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Harga Jual</th>
                                     <th class="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -147,6 +199,9 @@
                                                     {{ $p->stok }}
                                                 </span>
                                             @endif
+                                        </td>
+                                        <td class="px-4 py-3.5 font-medium text-slate-700">
+                                            Rp {{ number_format($p->harga_beli, 0, ',', '.') }}
                                         </td>
                                         <td class="px-4 py-3.5 font-medium text-slate-700">
                                             Rp {{ number_format($p->harga_jual, 0, ',', '.') }}
@@ -206,7 +261,6 @@
                         </table>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
@@ -264,12 +318,14 @@
                 </div>
 
                 <select id="e_kategori" name="kategori_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                    <option value="">-- Pilih Kategori --</option>
                     @foreach ($kategori as $k)
                         <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
                     @endforeach
                 </select>
 
                 <select id="e_pemasok" name="pemasok_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                    <option value="">-- Pilih Pemasok --</option>
                     @foreach ($pemasok as $s)
                         <option value="{{ $s->pemasok_id }}">{{ $s->nama_pemasok }}</option>
                     @endforeach
@@ -389,6 +445,7 @@
 
     <!-- SCRIPT -->
     <script>
+
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
         }

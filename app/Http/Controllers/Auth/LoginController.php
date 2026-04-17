@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class LoginController extends Controller
 {
     // FORM LOGIN
@@ -24,6 +25,12 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            if ($user->role->nama_role == 'Super Admin') {
+                return redirect('/superadmin');
+            }
 
             return redirect('/dashboard');
         }

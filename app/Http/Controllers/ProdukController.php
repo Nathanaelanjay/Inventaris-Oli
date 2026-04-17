@@ -9,9 +9,27 @@ use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $produk = Produk::with(['kategori', 'pemasok'])->get();
+        $query = Produk::with(['kategori', 'pemasok']);
+
+        // FILTER KATEGORI
+        if ($request->kategori) {
+            $query->where('kategori_id', $request->kategori);
+        }
+
+        // FILTER PEMASOK
+        if ($request->pemasok) {
+            $query->where('pemasok_id', $request->pemasok);
+        }
+
+        // SORTING STOK
+        if ($request->stok) {
+            $query->orderBy('stok', $request->stok);
+        }
+
+        $produk = $query->get();
+
         $kategori = Kategori::all();
         $pemasok = Pemasok::all();
 
@@ -100,5 +118,4 @@ class ProdukController extends Controller
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil dihapus');
     }
-
 }

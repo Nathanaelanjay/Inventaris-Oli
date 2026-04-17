@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Role;
 
 class RegisterController extends Controller
 {
     // FORM REGISTER
     public function showRegister()
     {
-        return view('auth.register');
+        $roles = Role::all();
+        return view('auth.register', compact('roles'));
     }
 
     // PROSES REGISTER
@@ -21,14 +23,15 @@ class RegisterController extends Controller
         $request->validate([
             'nama' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'role_id' => 'required|exists:roles,role_id'
         ]);
 
         User::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin' // default role
+            'role_id' => $request->role_id
         ]);
 
         return redirect('/login')->with('success', 'Register berhasil, silakan login');
