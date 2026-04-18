@@ -44,3 +44,6 @@ Route::resource('pemasok', PemasokController::class);
 // BARANG MASUK
 Route::resource('barangmasuk', BarangMasukController::class);
 
+// BARANG KELUAR
+Route::resource('barangkeluar', BarangKeluarController::class);
+

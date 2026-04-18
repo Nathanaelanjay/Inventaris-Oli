@@ -23,13 +23,13 @@ class PemasokController extends Controller
     {
         $request->validate([
             'nama_pemasok' => 'required|string|max:255',
-            'kontak' => 'required|string|max:20', // 🔥 FIX
+            'kontak' => 'required|string|max:20',
             'alamat' => 'nullable|string',
         ]);
 
         Pemasok::create([
             'nama_pemasok' => $request->nama_pemasok,
-            'kontak' => $request->kontak, // 🔥 FIX
+            'kontak' => $request->kontak,
             'alamat' => $request->alamat,
         ]);
 
@@ -43,7 +43,7 @@ class PemasokController extends Controller
     {
         $request->validate([
             'nama_pemasok' => 'required|string|max:255',
-            'kontak' => 'required|string|max:20', // 🔥 FIX
+            'kontak' => 'required|string|max:20',
             'alamat' => 'nullable|string',
         ]);
 
@@ -51,7 +51,7 @@ class PemasokController extends Controller
 
         $pemasok->update([
             'nama_pemasok' => $request->nama_pemasok,
-            'kontak' => $request->kontak, // 🔥 FIX
+            'kontak' => $request->kontak,
             'alamat' => $request->alamat,
         ]);
 

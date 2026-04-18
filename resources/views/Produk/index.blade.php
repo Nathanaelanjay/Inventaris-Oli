@@ -13,7 +13,7 @@
 <body class="min-h-screen bg-slate-50" style="font-family: 'Inter', sans-serif;">
     <div class="flex h-screen overflow-hidden">
 
-        <!-- SIDEBAR -->F
+        <!-- SIDEBAR -->
         @include('layouts.sidebar')
 
         <!--  MAIN CONTENT -->
@@ -100,7 +100,6 @@
                     </div>
                     <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-
                             {{-- Filter Kategori --}}
                             <select name="kategori"
                                 class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400">
@@ -139,13 +138,11 @@
                                     class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-xl px-4 py-2">
                                     Filter
                                 </button>
-
                                 <a href="{{ url()->current() }}"
                                     class="w-full text-center bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded-xl px-4 py-2">
                                     Reset
                                 </a>
                             </div>
-
                         </div>
                     </form>
 

@@ -113,7 +113,9 @@
                     <div class="relative">
                         <i class="fa-solid fa-arrow-trend-up text-white text-lg"></i>
                         <p class="text-white text-sm font-semibold">Pemasukan</p>
-                        <h2 class="text-4xl font-extrabold text-white mt-1 tracking-tight">Rp 0</h2>
+                        <h2 class="text-4xl font-extrabold text-white mt-1 tracking-tight">
+                            Rp {{ number_format($pemasukan, 0, ',', '.') }}
+                        </h2>
                         <p class="text-white text-xs opacity-80 mt-2">Bulan ini &bull;
                             {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}
                         </p>
@@ -128,7 +130,9 @@
                     <div class="relative">
                         <i class="fas fa-arrow-trend-down text-white text-lg"></i>
                         <p class="text-white text-sm font-semibold">Pengeluaran</p>
-                        <h2 class="text-4xl font-extrabold text-white mt-1 tracking-tight">Rp 0</h2>
+                        <h2 class="text-4xl font-extrabold text-white mt-1 tracking-tight">
+                            Rp {{ number_format($pengeluaran, 0, ',', '.') }}
+                        </h2>
                         <p class="text-white text-xs opacity-80 mt-2">Bulan ini &bull;
                             {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}
                         </p>
@@ -143,7 +147,9 @@
                     <div class="relative">
                         <i class="fas fa-sack-dollar text-white text-lg"></i>
                         <p class="text-white text-sm font-semibold">Keuntungan Bersih</p>
-                        <h2 class="text-4xl font-extrabold text-white mt-1 tracking-tight">Rp 0</h2>
+                        <h2 class="text-4xl font-extrabold text-white mt-1 tracking-tight">
+                            Rp {{ number_format($keuntungan_bersih, 0, ',', '.') }}
+                        </h2>
                         <p class="text-white text-xs opacity-80 mt-2">Bulan ini &bull;
                             {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}
                         </p>

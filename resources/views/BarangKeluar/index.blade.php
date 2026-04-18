@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barang Masuk - OliStock</title>
+    <title>Barang Keluar - OliStock</title>
 
     @vite('resources/css/app.css')
 
@@ -25,14 +25,14 @@
             <div
                 class="bg-white border-b border-slate-100 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
                 <div>
-                    <h1 class="text-lg font-bold text-slate-800">Barang Masuk</h1>
-                    <p class="text-xs text-slate-400">Manajemen stok barang masuk</p>
+                    <h1 class="text-lg font-bold text-slate-800">Barang Keluar</h1>
+                    <p class="text-xs text-slate-400">Manajemen stok barang keluar</p>
                 </div>
 
                 <button onclick="openModal('createModal')"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm">
                     <i class="fas fa-plus text-xs"></i>
-                    Tambah Barang Masuk
+                    Tambah Barang Keluar
                 </button>
             </div>
 
@@ -56,11 +56,11 @@
                             <div class="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-box text-slate-500 text-xs"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-700">Daftar Barang Masuk</span>
+                            <span class="text-sm font-semibold text-slate-700">Daftar Barang Keluar</span>
                         </div>
 
                         <span class="text-xs text-slate-400">
-                            {{ $barangMasuk->count() }} data ditemukan
+                            {{ $barangKeluar->count() }} data ditemukan
                         </span>
                     </div>
                     <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
@@ -68,7 +68,8 @@
 
                             {{-- FILTER TANGGAL --}}
                             <div>
-                                <input type="date" name="tanggal" value="{{ request('tanggal') }}"
+                                <input type="date" name="tanggal"
+                                    value="{{ request('tanggal') }}"
                                     class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm">
                             </div>
 
@@ -104,7 +105,6 @@
                                     Reset
                                 </a>
                             </div>
-
                         </div>
                     </form>
                     <!-- TABLE -->
@@ -117,9 +117,9 @@
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Tanggal</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Produk</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Kategori</th>
-                                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Pemasok</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Pelanggan</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Jumlah</th>
-                                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Harga Beli</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Harga Jual</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Total</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Aksi</th>
                                 </tr>
@@ -127,7 +127,7 @@
 
                             <tbody class="divide-y divide-slate-50">
 
-                                @forelse($barangMasuk as $i => $b)
+                                @forelse($barangKeluar as $i => $b)
 
                                     <tr class="hover:bg-slate-50/70 transition-colors">
 
@@ -143,12 +143,12 @@
                                             {{ $b->produk->nama_barang ?? '-'  }}
                                         </td>
 
-                                        <td class="px-6 py-3 font-medium text-slate-800">
-                                            {{ $b->produk->kategori->nama_kategori ?? '-' }}
+                                        <td class="px-6 py-3">
+                                            {{ $b->produk->kategori->nama_kategori ?? '-'  }}
                                         </td>
 
-                                        <td class="px-6 py-3 font-medium text-slate-800">
-                                            {{ $b->produk->pemasok->nama_pemasok ?? '-' }}
+                                        <td class="px-6 py-3">
+                                            {{ $b->pelanggan?->nama_bengkel ?? '-' }}
                                         </td>
 
                                         <td class="px-6 py-3">
@@ -156,26 +156,27 @@
                                         </td>
 
                                         <td class="px-6 py-3">
-                                            Rp {{ number_format($b->harga_beli, 0, ',', '.') }}
+                                            Rp {{ number_format($b->harga_jual, 0, ',', '.') }}
                                         </td>
 
-                                        <td class="px-6 py-3 font-semibold text-red-600">
+                                        <td class="px-6 py-3 font-semibold text-emerald-600">
                                             Rp {{ number_format($b->total, 0, ',', '.') }}
                                         </td>
 
                                         <td class="px-6 py-3">
                                             <div class="flex items-center gap-2">
 
-                                                <!-- EDIT -->
-                                                <button onclick="openEdit(this)" data-id="{{ $b->barang_masuk_id }}"
-                                                    data-produk="{{ $b->produk_id }}" data-jumlah="{{ $b->jumlah }}"
-                                                    data-harga="{{ $b->harga_beli }}" data-total="{{ $b->total }}"
-                                                    class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100 transition-colors">
-                                                    <i class="fas fa-pen text-[10px]"></i>
-                                                    Edit
-                                                </button>
+                                            <!-- EDIT -->
+                                            <button onclick="openEdit(this)" data-id="{{ $b->barang_keluar_id }}"
+                                                data-produk="{{ $b->produk_id }}" data-pelanggan="{{ $b->pelanggan_id }}"
+                                                data-jumlah="{{ $b->jumlah }}" data-harga="{{ $b->harga_jual }}"
+                                                data-total="{{ $b->total }}"
+                                                class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100 transition-colors">
+                                                <i class="fas fa-pen text-[10px]"></i>
+                                                Edit
+                                            </button>
                                                 <!-- DELETE -->
-                                                <form action="{{ route('barangmasuk.destroy', $b->barang_masuk_id) }}"
+                                                <form action="{{ route('barangkeluar.destroy', $b->barang_keluar_id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('DELETE')
@@ -192,16 +193,8 @@
                                 @empty
 
                                     <tr>
-                                        <td colspan="7" class="text-center py-16 text-slate-400">
-                                            <div class="flex flex-col items-center gap-3">
-                                                <div
-                                                    class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center">
-                                                    <i class="fas fa-box-open text-slate-400 text-xl"></i>
-                                                </div>
-                                                <div>
-                                                    <p class="text-sm font-medium text-slate-600">Belum ada barang masuk</p>
-                                                </div>
-                                            </div>
+                                        <td colspan="9" class="text-center py-10 text-slate-400">
+                                            Tidak ada data barang keluar
                                         </td>
                                     </tr>
 
@@ -234,10 +227,10 @@
 
                     <div>
                         <h2 class="text-base font-bold text-slate-800">
-                            Tambah Barang Masuk
+                            Tambah Barang Keluar
                         </h2>
                         <p class="text-xs text-slate-400">
-                            Input stok barang masuk
+                            Input stok barang keluar
                         </p>
                     </div>
                 </div>
@@ -249,7 +242,7 @@
             </div>
 
             <!-- FORM -->
-            <form action="{{ route('barangmasuk.store') }}" method="POST" class="px-6 py-5 space-y-4">
+            <form action="{{ route('barangkeluar.store') }}" method="POST" class="px-6 py-5 space-y-4">
                 @csrf
 
                 <!-- PRODUK -->
@@ -261,8 +254,22 @@
                         <option value="">-- Pilih Produk --</option>
 
                         @foreach($produk as $p)
-                            <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_beli }}">
+                            <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_jual }}">
                                 {{ $p->nama_barang }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500">Pilih Pelanggan</label>
+                    <select name="pelanggan_id" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+
+                        <option value="">-- Pilih Pelanggan --</option>
+
+                        @foreach($pelanggan as $pl)
+                            <option value="{{ $pl->pelanggan_id }}">
+                                {{ $pl->nama_bengkel }}
                             </option>
                         @endforeach
 
@@ -276,10 +283,10 @@
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
                 </div>
 
-                <!-- HARGA BELI -->
+                <!-- HARGA JUAL -->
                 <div>
-                    <label class="text-xs text-slate-500">Harga Beli</label>
-                    <input type="number" name="harga_beli" id="harga_beli" readonly
+                    <label class="text-xs text-slate-500">Harga Jual</label>
+                    <input type="number" name="harga_jual" id="harga_jual" readonly
                         class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
@@ -323,10 +330,10 @@
 
                     <div>
                         <h2 class="text-base font-bold text-slate-800">
-                            Edit Barang Masuk
+                            Edit Barang Keluar
                         </h2>
                         <p class="text-xs text-slate-400">
-                            Update data barang masuk
+                            Update data barang keluar
                         </p>
                     </div>
                 </div>
@@ -350,8 +357,21 @@
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
 
                         @foreach($produk as $p)
-                            <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_beli }}">
+                            <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_jual }}">
                                 {{ $p->nama_barang }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500">Pilih Pelanggan</label>
+
+                    <select name="pelanggan_id" id="e_pelanggan" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+
+                        @foreach($pelanggan as $pl)
+                            <option value="{{ $pl->pelanggan_id }}">
+                                {{ $pl->nama_bengkel }}
                             </option>
                         @endforeach
 
@@ -365,10 +385,10 @@
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
                 </div>
 
-                <!-- HARGA BELI -->
+                <!-- HARGA JUAL -->
                 <div>
-                    <label class="text-xs text-slate-500">Harga Beli</label>
-                    <input type="number" name="harga_beli" id="e_harga" readonly
+                    <label class="text-xs text-slate-500">Harga Jual</label>
+                    <input type="number" name="harga_jual" id="e_harga" readonly
                         class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
@@ -407,12 +427,15 @@
             let jumlah = btn.dataset.jumlah;
             let harga = btn.dataset.harga;
             let total = btn.dataset.total;
-
-            document.getElementById('editForm').action = `/barangmasuk/${id}`;
+            let pelanggan = btn.dataset.pelanggan;
+        
+            document.getElementById('editForm').action = `/barangkeluar/${id}`;
             document.getElementById('e_produk').value = produk;
             document.getElementById('e_jumlah').value = jumlah;
             document.getElementById('e_harga').value = harga;
             document.getElementById('e_total').value = total;
+            document.getElementById('e_pelanggan').value = pelanggan;
+            hitungTotalEdit();
         }
 
         function openModal(id) {
@@ -423,16 +446,16 @@
             document.getElementById(id).classList.add('hidden');
         }
 
-        function ambilHarga() {
+       function ambilHarga() {
             let select = document.getElementById('produk_id');
             let harga = select.options[select.selectedIndex].dataset.harga;
-            document.getElementById('harga_beli').value = harga;
+            document.getElementById('harga_jual').value = harga;
             hitungTotal();
         }
 
         function hitungTotal() {
             let jumlah = document.getElementById('jumlah').value;
-            let harga = document.getElementById('harga_beli').value;
+            let harga = document.getElementById('harga_jual').value;
             document.getElementById('total').value = jumlah * harga;
         }
 
@@ -448,6 +471,7 @@
             let harga = document.getElementById('e_harga').value;
             document.getElementById('e_total').value = jumlah * harga;
         }
+
     </script>
 </body>
 
