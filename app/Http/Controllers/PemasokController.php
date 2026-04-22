@@ -64,6 +64,12 @@ class PemasokController extends Controller
     public function destroy($id)
     {
         $pemasok = Pemasok::findOrFail($id);
+
+        // CEK APAKAH MASIH DIPAKAI PRODUK
+        if ($pemasok->produk()->count() > 0) {
+            return redirect()->back()->with('error', 'Pemasok tidak bisa dihapus karena masih digunakan oleh produk!');
+        }
+
         $pemasok->delete();
 
         return redirect()->back()->with('success', 'Pemasok berhasil dihapus');

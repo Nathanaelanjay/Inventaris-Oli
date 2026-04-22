@@ -7,7 +7,10 @@ use App\Models\Produk;
 use App\Models\Pelanggan;
 use App\Models\Pemasok;
 use App\Models\Kategori;
+use App\Models\Pemasukan;
+use App\Models\PiutangPelanggan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class BarangKeluarController extends Controller
@@ -73,29 +76,70 @@ class BarangKeluarController extends Controller
             'produk_id' => 'required',
             'jumlah' => 'required|numeric|min:1',
             'harga_jual' => 'required|numeric|min:0',
-            'pelanggan_id' => 'nullable'
+            'pelanggan_id' => 'nullable',
+            'status_pembayaran' => 'required',
+            'lama_hutang' => 'nullable|numeric|min:1'
         ]);
 
-        $produk = Produk::findOrFail($request->produk_id);
+        DB::transaction(function () use ($request) {
 
-        // ❗ CEK STOK
-        if ($produk->stok < $request->jumlah) {
-            return back()->with('error', 'Stok tidak cukup!');
-        }
+            $produk = Produk::findOrFail($request->produk_id);
 
-        $total = $request->jumlah * $request->harga_jual;
+            // CEK STOK
+            if ($produk->stok < $request->jumlah) {
+                throw new \Exception('Stok tidak cukup!');
+            }
 
-        BarangKeluar::create([
-            'produk_id' => $request->produk_id,
-            'user_id' => 1,
-            'pelanggan_id' => $request->pelanggan_id,
-            'jumlah' => $request->jumlah,
-            'harga_jual' => $request->harga_jual,
-            'total' => $total
-        ]);
+            $total = $request->jumlah * $request->harga_jual;
 
-        $produk->stok -= $request->jumlah;
-        $produk->save();
+            // SIMPAN BARANG KELUAR
+            $barang = BarangKeluar::create([
+                'produk_id' => $request->produk_id,
+                'user_id' => auth()->id(),
+                'pelanggan_id' => $request->pelanggan_id,
+                'jumlah' => $request->jumlah,
+                'harga_jual' => $request->harga_jual,
+                'total' => $total
+            ]);
+
+            // KURANGI STOK
+            $produk->stok -= $request->jumlah;
+            $produk->save();
+
+            if ($request->status_pembayaran == 'lunas') {
+
+                // MASUK KE PEMASUKAN
+                Pemasukan::create([
+                    'barang_keluar_id' => $barang->barang_keluar_id,
+                    'jumlah' => $total,
+                    'tanggal' => now(),
+                    'keterangan' => 'Penjualan ' . $produk->nama_barang
+                ]);
+
+            } else {
+
+                // VALIDASI WAJIB ADA PELANGGAN
+                if (!$request->pelanggan_id) {
+                    throw new \Exception('Pelanggan wajib dipilih untuk transaksi hutang!');
+                }
+
+                // HITUNG JATUH TEMPO
+                $bulan = (int) ($request->lama_hutang ?? 0);
+                $jatuhTempo = now()->addMonths($bulan);
+
+                // MASUK KE PIUTANG
+                PiutangPelanggan::create([
+                    'barang_keluar_id' => $barang->barang_keluar_id,
+                    'pelanggan_id' => $request->pelanggan_id,
+                    'total_piutang' => $total,
+                    'sisa_piutang' => $total,
+                    'total_terbayar' => 0,
+                    'status' => 'Belum Lunas',
+                    'tanggal_jatuh_tempo' => $jatuhTempo
+                ]);
+            }
+
+        });
 
         return redirect()->route('barangkeluar.index')
             ->with('success', 'Barang keluar berhasil ditambahkan');
@@ -107,44 +151,118 @@ class BarangKeluarController extends Controller
             'produk_id' => 'required',
             'jumlah' => 'required|numeric|min:1',
             'harga_jual' => 'required|numeric|min:0',
-            'pelanggan_id' => 'nullable'
+            'pelanggan_id' => 'nullable',
+            'status_pembayaran' => 'required',
+            'lama_hutang' => 'nullable|numeric|min:1'
         ]);
 
-        $barang = BarangKeluar::findOrFail($id);
-        $produkLama = Produk::findOrFail($barang->produk_id);
-        $produkLama->stok += $barang->jumlah;
-        $produkLama->save();
-        $produkBaru = Produk::findOrFail($request->produk_id);
+        DB::transaction(function () use ($request, $id) {
 
-        if ($produkBaru->stok < $request->jumlah) {
-            return back()->with('error', 'Stok tidak cukup!');
-        }
+            $barang = BarangKeluar::findOrFail($id);
 
-        $total = $request->jumlah * $request->harga_jual;
+            // =========================
+            // 1. BALIKIN STOK LAMA
+            // =========================
+            $produkLama = Produk::findOrFail($barang->produk_id);
+            $produkLama->stok += $barang->jumlah;
+            $produkLama->save();
 
-        $barang->update([
-            'produk_id' => $request->produk_id,
-            'pelanggan_id' => $request->pelanggan_id,
-            'jumlah' => $request->jumlah,
-            'harga_jual' => $request->harga_jual,
-            'total' => $total
-        ]);
+            // =========================
+            // 2. CEK STOK BARU
+            // =========================
+            $produkBaru = Produk::findOrFail($request->produk_id);
 
-        $produkBaru->stok -= $request->jumlah;
-        $produkBaru->save();
+            if ($produkBaru->stok < $request->jumlah) {
+                throw new \Exception('Stok tidak cukup!');
+            }
+
+            // =========================
+            // 3. HITUNG TOTAL
+            // =========================
+            $total = $request->jumlah * $request->harga_jual;
+
+            // =========================
+            // 4. UPDATE DATA BARANG
+            // =========================
+            $barang->update([
+                'produk_id' => $request->produk_id,
+                'pelanggan_id' => $request->pelanggan_id,
+                'jumlah' => $request->jumlah,
+                'harga_jual' => $request->harga_jual,
+                'total' => $total
+            ]);
+
+            // =========================
+            // 5. KURANGI STOK BARU
+            // =========================
+            $produkBaru->stok -= $request->jumlah;
+            $produkBaru->save();
+
+            // =========================
+            // 6. HAPUS RELASI LAMA
+            // =========================
+            Pemasukan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
+            PiutangPelanggan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
+
+            // =========================
+            // 7. LOGIC PEMBAYARAN
+            // =========================
+            if ($request->status_pembayaran == 'lunas') {
+
+                // MASUK KE PEMASUKAN
+                Pemasukan::create([
+                    'barang_keluar_id' => $barang->barang_keluar_id,
+                    'jumlah' => $total,
+                    'tanggal' => now(),
+                    'keterangan' => 'Update penjualan ' . $produkBaru->nama_barang
+                ]);
+
+            } else {
+
+                // VALIDASI WAJIB ADA PELANGGAN
+                if (!$request->pelanggan_id) {
+                    throw new \Exception('Pelanggan wajib dipilih untuk hutang!');
+                }
+
+                // HITUNG JATUH TEMPO (DALAM BULAN)
+                $jatuhTempo = now()->addMonths((int) $request->lama_hutang);
+
+                // MASUK KE PIUTANG
+                PiutangPelanggan::create([
+                    'barang_keluar_id' => $barang->barang_keluar_id,
+                    'pelanggan_id' => $request->pelanggan_id,
+                    'total_piutang' => $total,
+                    'sisa_piutang' => $total,
+                    'total_terbayar' => 0,
+                    'status' => 'Belum Lunas',
+                    'tanggal_jatuh_tempo' => $jatuhTempo
+                ]);
+            }
+        });
 
         return redirect()->route('barangkeluar.index')
             ->with('success', 'Barang keluar berhasil diupdate');
     }
-
     public function destroy($id)
     {
-        $barang = BarangKeluar::findOrFail($id);
-        $produk = Produk::findOrFail($barang->produk_id);
-        $produk->stok += $barang->jumlah;
-        $produk->save();
+        DB::transaction(function () use ($id) {
 
-        $barang->delete();
+            $barang = BarangKeluar::findOrFail($id);
+
+            // BALIKIN STOK
+            $produk = Produk::findOrFail($barang->produk_id);
+            $produk->stok += $barang->jumlah;
+            $produk->save();
+
+            // HAPUS PEMASUKAN
+            Pemasukan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
+
+            // HAPUS PIUTANG
+            PiutangPelanggan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
+
+            // HAPUS BARANG
+            $barang->delete();
+        });
 
         return redirect()->route('barangkeluar.index')
             ->with('success', 'Barang keluar berhasil dihapus');

@@ -75,6 +75,24 @@
                 Pemasok
             </a>
 
+            <!-- Piutang Pelanggan -->
+            <a href="/piutang-pelanggan"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+               {{ request()->is('piutang-pelanggan*') ? 'text-white font-semibold' : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-800' }}"
+                style="{{ request()->is('piutang-pelanggan*') ? 'background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);' : '' }}">
+                <i class="fas fa-hand-holding-usd text-sm flex-shrink-0"></i>
+                Piutang Pelanggan
+            </a>
+
+            <!-- Hutang Pembelian -->
+            <a href="/hutang-pembelian"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+               {{ request()->is('hutang-pembelian*') ? 'text-white font-semibold' : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-800' }}"
+                style="{{ request()->is('hutang-pembelian*') ? 'background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);' : '' }}">
+                <i class="fas fa-file-invoice-dollar text-sm flex-shrink-0"></i>
+                Hutang Pembelian
+            </a>
+
         </div>
     </nav>
 

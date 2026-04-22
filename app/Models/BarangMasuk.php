@@ -15,7 +15,8 @@ class BarangMasuk extends Model
         'harga_beli',
         'total',
         'user_id',
-        'produk_id'
+        'produk_id',
+        'pemasok_id'
     ];
 
     public function user()
@@ -36,5 +37,10 @@ class BarangMasuk extends Model
     public function pengeluaran()
     {
         return $this->hasOne(Pengeluaran::class, 'barang_masuk_id');
+    }
+
+    public function pemasok()
+    {
+        return $this->belongsTo(Pemasok::class, 'pemasok_id');
     }
 }

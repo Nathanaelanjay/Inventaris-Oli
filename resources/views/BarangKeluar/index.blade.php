@@ -121,6 +121,7 @@
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Jumlah</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Harga Jual</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Total</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Status Pembayaran</th>
                                     <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase">Aksi</th>
                                 </tr>
                             </thead>
@@ -154,7 +155,7 @@
                                         <td class="px-6 py-3">
                                             {{ $b->jumlah }}
                                         </td>
-
+                                    
                                         <td class="px-6 py-3">
                                             Rp {{ number_format($b->harga_jual, 0, ',', '.') }}
                                         </td>
@@ -162,7 +163,31 @@
                                         <td class="px-6 py-3 font-semibold text-emerald-600">
                                             Rp {{ number_format($b->total, 0, ',', '.') }}
                                         </td>
+                                        <td class="px-6 py-4">
+                                            @if ($b->piutang)
 
+                                                @if ($b->piutang->status == 'lunas')
+                                                    <span class="text-green-600 font-semibold">Lunas</span>
+
+                                                @elseif ($b->piutang->status == 'sebagian')
+                                                    <div class="text-amber-600 font-semibold">Sebagian</div>
+                                                    <div class="text-xs text-slate-500">
+                                                        Sisa:
+                                                        Rp {{ number_format($b->piutang->sisa_piutang,0,',','.') }}
+                                                    </div>
+
+                                                @else
+                                                    <div class="text-red-600 font-semibold">Hutang</div>
+                                                    <div class="text-xs text-slate-500">
+                                                        Jatuh tempo:
+                                                        {{ \Carbon\Carbon::parse($b->piutang->tanggal_jatuh_tempo)->format('d-m-Y') }}
+                                                    </div>
+                                                @endif
+
+                                            @else
+                                                <span class="text-green-600 font-semibold">Lunas</span>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-3">
                                             <div class="flex items-center gap-2">
 
@@ -176,6 +201,7 @@
                                                 Edit
                                             </button>
                                                 <!-- DELETE -->
+
                                                 <form action="{{ route('barangkeluar.destroy', $b->barang_keluar_id) }}"
                                                     method="POST">
                                                     @csrf
@@ -193,15 +219,20 @@
                                 @empty
 
                                     <tr>
-                                        <td colspan="9" class="text-center py-10 text-slate-400">
-                                            Tidak ada data barang keluar
+                                        <td colspan="9" class="text-center py-16 text-slate-400">
+                                            <div class="flex flex-col items-center gap-3">
+                                                <div
+                                                    class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center">
+                                                    <i class="fas fa-box-open text-slate-400 text-xl"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm font-medium text-slate-600">Belum ada barang keluar</p>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
-
                                 @endforelse
-
                             </tbody>
-
                         </table>
                     </div>
                 </div>
@@ -275,7 +306,25 @@
 
                     </select>
                 </div>
+                <div>
+                    <label class="text-xs text-slate-500">Status Pembayaran</label>
+                    <select name="status_pembayaran" id="status_pembayaran" onchange="toggleJatuhTempo()"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
 
+                        <option value="lunas">Lunas</option>
+                        <option value="hutang">Hutang</option>
+
+                    </select>
+                </div>
+                <div id="jatuh_tempo_container" class="hidden">
+                    <label class="text-xs text-slate-500">Lama Hutang (Bulan)</label>
+                    <select name="lama_hutang" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                        <option value="1">1 Bulan</option>
+                        <option value="2">2 Bulan</option>
+                        <option value="3">3 Bulan</option>
+                        <option value="6">6 Bulan</option>
+                    </select>
+                </div>
                 <!-- JUMLAH -->
                 <div>
                     <label class="text-xs text-slate-500">Jumlah</label>
@@ -286,15 +335,23 @@
                 <!-- HARGA JUAL -->
                 <div>
                     <label class="text-xs text-slate-500">Harga Jual</label>
-                    <input type="number" name="harga_jual" id="harga_jual" readonly
+
+                    <!-- tampil -->
+                    <input type="text" id="harga_jual_view" readonly
                         class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
+
+                    <input type="hidden" name="harga_jual" id="harga_jual">
                 </div>
 
                 <!-- TOTAL -->
                 <div>
                     <label class="text-xs text-slate-500">Total</label>
-                    <input type="number" name="total" id="total" readonly
+
+                    <!-- tampil -->
+                    <input type="text" id="total_view" readonly
                         class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
+
+                    <input type="hidden" name="total" id="total">
                 </div>
 
                 <!-- ACTION -->
@@ -308,6 +365,7 @@
                         Simpan
                     </button>
                 </div>
+                
 
             </form>
         </div>
@@ -377,7 +435,25 @@
 
                     </select>
                 </div>
+                <div>
+                    <label class="text-xs text-slate-500">Status Pembayaran</label>
+                    <select name="status_pembayaran" id="e_status_pembayaran" onchange="toggleJatuhTempoEdit()"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
 
+                        <option value="lunas">Lunas</option>
+                        <option value="hutang">Hutang</option>
+
+                    </select>
+                </div>
+                <div id="e_jatuh_tempo_container" class="hidden">
+                    <label class="text-xs text-slate-500">Lama Hutang (Bulan)</label>
+                    <select name="lama_hutang" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                        <option value="1">1 Bulan</option>
+                        <option value="2">2 Bulan</option>
+                        <option value="3">3 Bulan</option>
+                        <option value="6">6 Bulan</option>
+                    </select>
+                </div>
                 <!-- JUMLAH -->
                 <div>
                     <label class="text-xs text-slate-500">Jumlah</label>
@@ -388,15 +464,24 @@
                 <!-- HARGA JUAL -->
                 <div>
                     <label class="text-xs text-slate-500">Harga Jual</label>
-                    <input type="number" name="harga_jual" id="e_harga" readonly
-                        class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
-                </div>
 
+                    <!-- tampil -->
+                    <input type="text" id="e_harga_view" readonly
+                        class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
+
+                    <!-- angka asli -->
+                    <input type="hidden" name="harga_jual" id="e_harga">
+                </div>
                 <!-- TOTAL -->
                 <div>
                     <label class="text-xs text-slate-500">Total</label>
-                    <input type="number" name="total" id="e_total" readonly
+
+                    <!-- tampil -->
+                    <input type="text" id="e_total_view" readonly
                         class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-sm">
+
+                    <!-- angka asli -->
+                    <input type="hidden" name="total" id="e_total">
                 </div>
 
                 <!-- ACTION -->
@@ -418,6 +503,11 @@
 
     <!-- SCRIPT -->
     <script>
+        function formatRupiah(angka) {
+            angka = parseInt(angka || 0);
+            return 'Rp ' + angka.toLocaleString('id-ID');
+        }
+
         function openEdit(btn) {
 
             document.getElementById('editModal').classList.remove('hidden');
@@ -428,14 +518,18 @@
             let harga = btn.dataset.harga;
             let total = btn.dataset.total;
             let pelanggan = btn.dataset.pelanggan;
-        
+
             document.getElementById('editForm').action = `/barangkeluar/${id}`;
             document.getElementById('e_produk').value = produk;
             document.getElementById('e_jumlah').value = jumlah;
+
             document.getElementById('e_harga').value = harga;
+            document.getElementById('e_harga_view').value = formatRupiah(harga);
+
             document.getElementById('e_total').value = total;
+            document.getElementById('e_total_view').value = formatRupiah(total);
+
             document.getElementById('e_pelanggan').value = pelanggan;
-            hitungTotalEdit();
         }
 
         function openModal(id) {
@@ -446,30 +540,70 @@
             document.getElementById(id).classList.add('hidden');
         }
 
-       function ambilHarga() {
+        function ambilHarga() {
             let select = document.getElementById('produk_id');
-            let harga = select.options[select.selectedIndex].dataset.harga;
+            let harga = parseInt(select.options[select.selectedIndex].dataset.harga || 0);
+
+            document.getElementById('harga_jual_view').value = formatRupiah(harga);
+
             document.getElementById('harga_jual').value = harga;
+
             hitungTotal();
         }
 
         function hitungTotal() {
-            let jumlah = document.getElementById('jumlah').value;
-            let harga = document.getElementById('harga_jual').value;
-            document.getElementById('total').value = jumlah * harga;
+            let jumlah = parseInt(document.getElementById('jumlah').value || 0);
+            let harga = parseInt(document.getElementById('harga_jual').value || 0);
+
+            let total = jumlah * harga;
+
+            document.getElementById('total_view').value = formatRupiah(total);
+
+            document.getElementById('total').value = total;
         }
 
         function ambilHargaEdit() {
+
             let select = document.getElementById('e_produk');
-            let harga = select.options[select.selectedIndex].dataset.harga;
+            let harga = parseInt(select.options[select.selectedIndex].dataset.harga || 0);
+
             document.getElementById('e_harga').value = harga;
+            document.getElementById('e_harga_view').value = formatRupiah(harga);
+
             hitungTotalEdit();
         }
 
         function hitungTotalEdit() {
-            let jumlah = document.getElementById('e_jumlah').value;
-            let harga = document.getElementById('e_harga').value;
-            document.getElementById('e_total').value = jumlah * harga;
+
+            let jumlah = parseInt(document.getElementById('e_jumlah').value || 0);
+            let harga = parseInt(document.getElementById('e_harga').value || 0);
+
+            let total = jumlah * harga;
+
+            document.getElementById('e_total').value = total;
+            document.getElementById('e_total_view').value = formatRupiah(total);
+        }
+
+        function toggleJatuhTempo() {
+            let status = document.getElementById('status_pembayaran').value;
+            let jt = document.getElementById('jatuh_tempo_container');
+
+            if (status === 'hutang') {
+                jt.classList.remove('hidden');
+            } else {
+                jt.classList.add('hidden');
+            }
+        }
+
+        function toggleJatuhTempoEdit() {
+            let status = document.getElementById('e_status_pembayaran').value;
+            let jt = document.getElementById('e_jatuh_tempo_container');
+
+            if (status === 'hutang') {
+                jt.classList.remove('hidden');
+            } else {
+                jt.classList.add('hidden');
+            }
         }
 
     </script>

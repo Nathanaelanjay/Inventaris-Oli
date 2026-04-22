@@ -10,16 +10,19 @@ use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PemasokController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PiutangPelangganController;
+use App\Http\Controllers\HutangPembelianController;
 
 Route::get('/', [LoginController::class, 'showLogin']);
 
 Route::resource('produk', ProdukController::class);
 Route::resource('barang-masuk', BarangMasukController::class);
 Route::resource('barang-keluar', BarangKeluarController::class);
-
 Route::resource('kategori', KategoriController::class);
 Route::resource('pemasok', PemasokController::class);
 Route::resource('pelanggan', PelangganController::class);
+Route::resource('piutang-pelanggan', PiutangPelangganController::class);
+Route::resource('hutang-pembelian', HutangPembelianController::class);
 
 // LOGIN
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
@@ -47,3 +50,22 @@ Route::resource('barangmasuk', BarangMasukController::class);
 // BARANG KELUAR
 Route::resource('barangkeluar', BarangKeluarController::class);
 
+// PIUTANG PELANGGAN
+Route::resource('piutang-pelanggan', PiutangPelangganController::class);
+Route::get('/piutang-pelanggan', [PiutangPelangganController::class, 'index']);
+
+Route::post('/piutang-pelanggan/bayar/{id}', [PiutangPelangganController::class, 'bayar'])
+    ->name('piutang.bayar');
+
+Route::delete('/piutang-pelanggan/{id}', [PiutangPelangganController::class, 'destroy']);
+
+// HUTANG PEMBELIAN
+Route::resource('hutang-pembelian', HutangPembelianController::class);
+Route::get('/hutang-pembelian', [HutangPembelianController::class, 'index'])
+    ->name('hutang.index');
+
+Route::post('/hutang-pembelian/bayar/{id}', [HutangPembelianController::class, 'bayar'])
+    ->name('hutang.bayar');
+
+Route::delete('/hutang-pembelian/{id}', [HutangPembelianController::class, 'destroy'])
+    ->name('hutang.destroy');
