@@ -232,7 +232,7 @@
                         Batal
                     </button>
 
-                    <button type="submit" class="px-5 py-2 bg-blue-500 text-white rounded-xl">
+                    <button  class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-xl">
                         Update
                     </button>
                 </div>

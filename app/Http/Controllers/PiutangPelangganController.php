@@ -10,22 +10,19 @@ use Carbon\Carbon;
 
 class PiutangPelangganController extends Controller
 {
-    /**
-     * 📄 TAMPIL DATA
-     */
-    public function index()
+    public function index(Request $request)
     {
+        $query = PiutangPelanggan::with('barangKeluar.pelanggan');
 
-        $piutang = PiutangPelanggan::with('barangKeluar.pelanggan')->get();
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
 
-
+        $piutang = $query->latest()->get();
 
         return view('piutangpelanggan.index', compact('piutang'));
     }
 
-    /**
-     * 💰 BAYAR PIUTANG
-     */
     public function bayar(Request $request, $id)
     {
         $request->validate([
@@ -72,9 +69,6 @@ class PiutangPelangganController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
-    /**
-     * 🗑️ DELETE (OPSIONAL)
-     */
     public function destroy($id)
     {
         $piutang = PiutangPelanggan::findOrFail($id);
@@ -82,4 +76,5 @@ class PiutangPelangganController extends Controller
 
         return redirect()->back()->with('success', 'Data piutang dihapus');
     }
+
 }

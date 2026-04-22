@@ -61,19 +61,6 @@
                     <p class="text-xs text-slate-400 mt-1">Total produk terdaftar</p>
                 </div>
 
-                <!-- Total Stok -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-100 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-50">
-                            <i class="fas fa-circle-check text-emerald-600 text-lg"></i>
-                        </div>
-                        <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">Unit</span>
-                    </div>
-                    <p class="text-sm text-slate-500 font-medium">Total Stok</p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">{{ $totalStok }}</h2>
-                    <p class="text-xs text-slate-400 mt-1">Total produk tersedia</p>
-                </div>
-
                 <!-- Produk Menipis -->
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4">
@@ -87,18 +74,41 @@
                     <p class="text-xs text-slate-400 mt-1">Perlu segera diisi ulang</p>
                 </div>
 
-                <!-- Keuntungan -->
+                <!-- Total Piutang -->
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-50">
-                            <i class="fas fa-dollar-sign text-emerald-600 text-lg"></i>
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50">
+                            <i class="fas fa-wallet text-blue-600 text-lg"></i>
                         </div>
                         <span
-                            class="text-xs font-semibold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">{{ date('Y') }}</span>
+                            class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Rupiah</span>
                     </div>
-                    <p class="text-sm text-slate-500 font-medium">Keuntungan</p>
-                    <h2 class="text-3xl font-extrabold text-emerald-600 mt-1 tracking-tight">Rp 0</h2>
-                    <p class="text-xs text-slate-400 mt-1">Tahun {{ date('Y') }}</p>
+
+                    <p class="text-sm text-slate-500 font-medium">Total Piutang</p>
+
+                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">
+                        Rp {{ number_format($totalPiutang, 0, ',', '.') }}
+                    </h2>
+
+                    <p class="text-xs text-slate-400 mt-1">Total piutang pelanggan</p>
+                </div>
+
+                <!-- Total Hutang Pembelian -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50">
+                            <i class="fas fa-file-invoice-dollar text-red-600 text-lg"></i>
+                        </div>
+                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-lg">Rupiah</span>
+                    </div>
+
+                    <p class="text-sm text-slate-500 font-medium">Total Hutang</p>
+
+                    <h2 class="text-3xl font-extrabold text-red-600 mt-1 tracking-tight">
+                        Rp {{ number_format($totalHutang, 0, ',', '.') }}
+                    </h2>
+
+                    <p class="text-xs text-slate-400 mt-1">Total hutang pembelian</p>
                 </div>
             </div>
 

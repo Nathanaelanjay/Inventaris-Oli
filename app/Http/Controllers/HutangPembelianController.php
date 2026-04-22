@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class HutangPembelianController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $hutang = HutangPembelian::with('barangMasuk.produk.pemasok')->get();
+        $query = HutangPembelian::with('barangMasuk.produk.pemasok');
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $hutang = $query->latest()->get();
 
         return view('hutangpembelian.index', compact('hutang'));
     }

@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pemasukan;
 use App\Models\Produk;
 use App\Models\BarangMasuk;
-use Illuminate\Http\Request;
 use App\Models\BarangKeluar;
+use App\Models\PiutangPelanggan;
+use App\Models\HutangPembelian;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $now = Carbon::now();
         $totalProduk = Produk::count();
         $totalStok = Produk::sum('stok');
         $produkMenipis = Produk::whereColumn('stok', '<=', 'stok_minimum')->count();
-        $now = Carbon::now();
 
         $pengeluaran = BarangMasuk::whereMonth('tanggal', $now->month)
             ->whereYear('tanggal', $now->year)
@@ -28,13 +29,19 @@ class DashboardController extends Controller
 
         $keuntungan_bersih = $pemasukan - $pengeluaran;
 
+        $totalPiutang = PiutangPelanggan::sum('sisa_piutang');
+
+        $totalHutang = HutangPembelian::sum('sisa_hutang');
+
         return view('dashboard', compact(
             'totalProduk',
             'totalStok',
             'produkMenipis',
             'pengeluaran',
             'pemasukan',
-            'keuntungan_bersih'
+            'keuntungan_bersih',
+            'totalPiutang',
+            'totalHutang'
         ));
     }
 }

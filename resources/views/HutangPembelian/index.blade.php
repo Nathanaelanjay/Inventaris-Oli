@@ -64,6 +64,33 @@
                         </div>
                         <span class="text-xs text-slate-400">{{ $hutang->count() }} data</span>
                     </div>
+                    <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
+                        <div class="flex flex-col md:flex-row gap-3 items-center">
+
+                            <!-- STATUS -->
+                            <select name="status" class="w-full md:w-64 border rounded-xl px-3 py-2 text-sm">
+                                <option value="">Semua Status</option>
+                                <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                <option value="hutang" {{ request('status') == 'hutang' ? 'selected' : '' }}>Hutang
+                                </option>
+                                <option value="sebagian" {{ request('status') == 'sebagian' ? 'selected' : '' }}>Sebagian
+                                </option>
+                            </select>
+
+                            <div class="flex gap-2 w-full md:w-auto md:ml-auto">
+                                <button type="submit"
+                                    class="w-full md:w-40 bg-emerald-500 text-white rounded-xl px-4 py-2 text-sm">
+                                    Filter
+                                </button>
+
+                                <a href="{{ url()->current() }}"
+                                    class="w-full md:w-40 text-center bg-slate-200 rounded-xl px-4 py-2 text-sm">
+                                    Reset
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
 
                     <!-- TABLE -->
                     <div class="overflow-x-auto">
