@@ -7,18 +7,12 @@ use Illuminate\Http\Request;
 
 class PemasokController extends Controller
 {
-    // =========================
-    // INDEX (READ)
-    // =========================
     public function index()
     {
         $pemasok = Pemasok::all();
         return view('pemasok.index', compact('pemasok'));
     }
 
-    // =========================
-    // STORE (CREATE)
-    // =========================
     public function store(Request $request)
     {
         $request->validate([
@@ -36,9 +30,6 @@ class PemasokController extends Controller
         return redirect()->back()->with('success', 'Pemasok berhasil ditambahkan');
     }
 
-    // =========================
-    // UPDATE (EDIT)
-    // =========================
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -58,9 +49,6 @@ class PemasokController extends Controller
         return redirect()->back()->with('success', 'Pemasok berhasil diupdate');
     }
 
-    // =========================
-    // DELETE
-    // =========================
     public function destroy($id)
     {
         $pemasok = Pemasok::findOrFail($id);

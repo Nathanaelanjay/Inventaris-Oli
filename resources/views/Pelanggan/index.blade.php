@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemasok - OliStock</title>
+    <title>Pelanggan - OliStock</title>
+
     @vite('resources/css/app.css')
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -14,31 +16,28 @@
 
     <div class="flex h-screen overflow-hidden">
 
-        <!-- SIDEBAR -->
         @include('layouts.sidebar')
 
-        <!-- MAIN -->
         <main class="flex-1 overflow-y-auto ml-64">
 
             <!-- TOP BAR -->
             <div
                 class="bg-white border-b border-slate-100 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
                 <div>
-                    <h1 class="text-lg font-bold text-slate-800">Pemasok</h1>
-                    <p class="text-xs text-slate-400">Manajemen data Pemasok</p>
+                    <h1 class="text-lg font-bold text-slate-800">Pelanggan</h1>
+                    <p class="text-xs text-slate-400">Manajemen data pelanggan</p>
                 </div>
 
                 <button onclick="openModal('createModal')"
                     class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm">
                     <i class="fas fa-plus text-xs"></i>
-                    Tambah Pemasok
+                    Tambah Pelanggan
                 </button>
             </div>
 
             <!-- CONTENT -->
             <div class="p-8">
 
-                <!-- ALERT -->
                 @if(session('success'))
                     <div
                         class="mb-5 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl">
@@ -54,11 +53,12 @@
                     <div class="px-6 py-4 border-b border-slate-50 flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <div class="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-truck text-slate-500 text-xs"></i>
+                                <i class="fas fa-user text-slate-500 text-xs"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-700">Daftar Pemasok</span>
+                            <span class="text-sm font-semibold text-slate-700">Daftar Pelanggan</span>
                         </div>
-                        <span class="text-xs text-slate-400">{{ $pemasok->count() }} pemasok ditemukan</span>
+
+                        <span class="text-xs text-slate-400">{{ $pelanggan->count() }} pelanggan ditemukan</span>
                     </div>
 
                     <!-- TABLE -->
@@ -76,41 +76,42 @@
                             </thead>
 
                             <tbody class="divide-y divide-slate-50">
-                                @forelse ($pemasok as $i => $s)
-                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                @forelse ($pelanggan as $i => $p)
+                                    <tr class="hover:bg-slate-50/70">
 
-                                        <td class="px-6 py-3.5 text-xs text-slate-500">
+                                        <td class="px-6 py-3 text-xs text-slate-500">
                                             {{ $i + 1 }}
                                         </td>
 
-                                        <td class="px-6 py-3.5 font-medium text-slate-800">
-                                            {{ $s->nama_pemasok }}
+                                        <td class="px-6 py-3 font-medium text-slate-800">
+                                            {{ $p->nama_bengkel }}
                                         </td>
 
-                                        <td class="px-6 py-3.5 text-slate-600">
-                                            {{ $s->kontak ?? '-' }}
+                                        <td class="px-6 py-3 text-slate-600">
+                                            {{ $p->no_telp ?? '-' }}
                                         </td>
 
-                                        <td class="px-6 py-3.5 text-slate-600">
-                                            {{ $s->alamat ?? '-' }}
+                                        <td class="px-6 py-3 text-slate-600">
+                                            {{ $p->alamat ?? '-' }}
                                         </td>
 
-                                        <td class="px-6 py-3.5">
-                                            <div class="flex items-center justify-center gap-2">
+                                        <td class="px-6 py-3">
+                                            <div class="flex justify-center gap-2">
 
                                                 <!-- EDIT -->
-                                                <button onclick='openEdit(@json($s))'
+                                                <button onclick='openEdit(@json($p))'
                                                     class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100">
                                                     <i class="fas fa-pen text-[10px]"></i>
                                                     Edit
                                                 </button>
 
                                                 <!-- DELETE -->
-                                                <form action="{{ route('pemasok.destroy', $s->pemasok_id) }}" method="POST">
+                                                <form action="{{ route('pelanggan.destroy', $p->pelanggan_id) }}"
+                                                    method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        onclick="return confirm('Yakin hapus pemasok ini?')"
+                                                        onclick="return confirm('Yakin hapus pelanggan ini?')"
                                                         class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-medium rounded-lg border border-red-100">
                                                         <i class="fas fa-trash text-[10px]"></i>
                                                         Hapus
@@ -123,23 +124,17 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-16">
-                                            <div class="flex flex-col items-center gap-3">
-                                                <div
-                                                    class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center">
-                                                    <i class="fas fa-truck text-slate-400 text-xl"></i>
-                                                </div>
-                                                <p class="text-sm text-slate-500">Belum ada pemasok</p>
-                                            </div>
+                                        <td colspan="5" class="text-center py-16 text-slate-400">
+                                            Belum ada pelanggan
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
+
                         </table>
                     </div>
 
                 </div>
-
             </div>
         </main>
     </div>
@@ -157,8 +152,8 @@
                         <i class="fas fa-plus text-blue-600 text-sm"></i>
                     </div>
                     <div>
-                        <h2 class="text-base font-bold text-slate-800">Tambah Pemasok</h2>
-                        <p class="text-xs text-slate-400">Isi data pemasok baru</p>
+                        <h2 class="text-base font-bold text-slate-800">Tambah Pelanggan</h2>
+                        <p class="text-xs text-slate-400">Isi data pelanggan baru</p>
                     </div>
                 </div>
 
@@ -169,18 +164,18 @@
             </div>
 
             <!-- FORM -->
-            <form method="POST" action="{{ route('pemasok.store') }}" class="px-6 py-5 space-y-4">
+            <form method="POST" action="{{ route('pelanggan.store') }}" class="px-6 py-5 space-y-4">
                 @csrf
 
-                <!-- NAMA -->
+                <!-- NAMA BENGKEL -->
                 <div>
-                    <input type="text" name="nama_pemasok" placeholder="Nama Pemasok"
+                    <input type="text" name="nama_bengkel" placeholder="Nama Bengkel"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
                 </div>
 
-                <!-- KONTAK -->
+                <!-- NO TELP -->
                 <div>
-                    <input type="text" name="kontak" placeholder="Nomor Telepon"
+                    <input type="text" name="no_telp" placeholder="Nomor Telepon"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
@@ -217,11 +212,11 @@
                         <i class="fas fa-pen text-amber-600 text-sm"></i>
                     </div>
                     <div>
-                        <h2 id="editTitle" class="text-base font-bold text-slate-800">
-                            Edit Pemasok
+                        <h2 class="text-base font-bold text-slate-800">
+                            Edit Pelanggan
                         </h2>
                         <p class="text-xs text-slate-400">
-                            Perbarui data pemasok
+                            Perbarui data pelanggan
                         </p>
                     </div>
                 </div>
@@ -239,15 +234,15 @@
 
                 <!-- NAMA -->
                 <div>
-                    <label class="text-xs text-slate-500">Nama Pemasok</label>
-                    <input type="text" id="e_nama" name="nama_pemasok"
+                    <label class="text-xs text-slate-500">Nama Bengkel</label>
+                    <input type="text" id="e_nama" name="nama_bengkel"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
                 </div>
 
                 <!-- TELEPON -->
                 <div>
                     <label class="text-xs text-slate-500">Nomor Telepon</label>
-                    <input type="text" id="e_telepon" name="kontak"
+                    <input type="text" id="e_telepon" name="no_telp"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
@@ -264,13 +259,14 @@
                         Batal
                     </button>
 
-                    <button  class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm rounded-xl">
+                    <button class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm rounded-xl">
                         Update
                     </button>
                 </div>
             </form>
         </div>
     </div>
+
 
     <!-- SCRIPT -->
     <script>
@@ -288,12 +284,10 @@
             document.getElementById('editModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
-            document.getElementById('editForm').action = `/pemasok/${data.pemasok_id}`;
+            document.getElementById('editForm').action = `/pelanggan/${data.pelanggan_id}`;
 
-            document.getElementById('e_nama').value = data.nama_pemasok;
-
-            document.getElementById('e_telepon').value = data.kontak;
-
+            document.getElementById('e_nama').value = data.nama_bengkel;
+            document.getElementById('e_telepon').value = data.no_telp;
             document.getElementById('e_alamat').value = data.alamat;
         }
     </script>

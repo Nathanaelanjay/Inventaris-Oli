@@ -180,11 +180,11 @@
 
                 <!-- ACTION -->
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('createModal')" class="px-4 py-2">
+                    <button type="button" onclick="closeModal('createModal')" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 
-                    <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded-xl">
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl">
                         Simpan
                     </button>
                 </div>
@@ -228,11 +228,11 @@
 
                 <!-- ACTION -->
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('editModal')" class="px-4 py-2">
+                    <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 
-                    <button  class="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-xl">
+                    <button  class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm rounded-xl">
                         Update
                     </button>
                 </div>

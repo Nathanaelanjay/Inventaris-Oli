@@ -219,7 +219,7 @@
 
                 <div class="flex justify-end gap-2">
                     <button type="button" onclick="closeModal('bayarModal')"
-                        class="px-4 py-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50">
+                        class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 

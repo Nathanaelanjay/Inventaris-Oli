@@ -357,7 +357,7 @@
                 <!-- ACTION -->
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('createModal')"
-                        class="px-4 py-2 text-sm text-slate-600 hover:text-slate-800">
+                        class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 
@@ -487,7 +487,7 @@
                 <!-- ACTION -->
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('editModal')"
-                        class="px-4 py-2 text-sm text-slate-600 hover:text-slate-800">
+                        class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 

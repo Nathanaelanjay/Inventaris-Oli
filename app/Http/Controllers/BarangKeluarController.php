@@ -108,7 +108,6 @@ class BarangKeluarController extends Controller
 
             if ($request->status_pembayaran == 'lunas') {
 
-                // MASUK KE PEMASUKAN
                 Pemasukan::create([
                     'barang_keluar_id' => $barang->barang_keluar_id,
                     'jumlah' => $total,
@@ -118,23 +117,20 @@ class BarangKeluarController extends Controller
 
             } else {
 
-                // VALIDASI WAJIB ADA PELANGGAN
                 if (!$request->pelanggan_id) {
                     throw new \Exception('Pelanggan wajib dipilih untuk transaksi hutang!');
                 }
 
-                // HITUNG JATUH TEMPO
                 $bulan = (int) ($request->lama_hutang ?? 0);
                 $jatuhTempo = now()->addMonths($bulan);
 
-                // MASUK KE PIUTANG
                 PiutangPelanggan::create([
                     'barang_keluar_id' => $barang->barang_keluar_id,
                     'pelanggan_id' => $request->pelanggan_id,
                     'total_piutang' => $total,
                     'sisa_piutang' => $total,
                     'total_terbayar' => 0,
-                    'status' => 'Belum Lunas',
+                    'status' => 'hutang',
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
@@ -160,30 +156,15 @@ class BarangKeluarController extends Controller
 
             $barang = BarangKeluar::findOrFail($id);
 
-            // =========================
-            // 1. BALIKIN STOK LAMA
-            // =========================
             $produkLama = Produk::findOrFail($barang->produk_id);
             $produkLama->stok += $barang->jumlah;
             $produkLama->save();
-
-            // =========================
-            // 2. CEK STOK BARU
-            // =========================
             $produkBaru = Produk::findOrFail($request->produk_id);
 
             if ($produkBaru->stok < $request->jumlah) {
                 throw new \Exception('Stok tidak cukup!');
             }
-
-            // =========================
-            // 3. HITUNG TOTAL
-            // =========================
             $total = $request->jumlah * $request->harga_jual;
-
-            // =========================
-            // 4. UPDATE DATA BARANG
-            // =========================
             $barang->update([
                 'produk_id' => $request->produk_id,
                 'pelanggan_id' => $request->pelanggan_id,
@@ -192,21 +173,13 @@ class BarangKeluarController extends Controller
                 'total' => $total
             ]);
 
-            // =========================
-            // 5. KURANGI STOK BARU
-            // =========================
             $produkBaru->stok -= $request->jumlah;
             $produkBaru->save();
 
-            // =========================
-            // 6. HAPUS RELASI LAMA
-            // =========================
             Pemasukan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
             PiutangPelanggan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
 
-            // =========================
-            // 7. LOGIC PEMBAYARAN
-            // =========================
+
             if ($request->status_pembayaran == 'lunas') {
 
                 // MASUK KE PEMASUKAN
@@ -234,7 +207,7 @@ class BarangKeluarController extends Controller
                     'total_piutang' => $total,
                     'sisa_piutang' => $total,
                     'total_terbayar' => 0,
-                    'status' => 'Belum Lunas',
+                    'status' => 'hutang',
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }

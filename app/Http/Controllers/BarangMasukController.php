@@ -52,9 +52,6 @@ class BarangMasukController extends Controller
         ));
     }
 
-    // =========================
-    // STORE
-    // =========================
     public function store(Request $request)
     {
         $request->validate([
@@ -83,9 +80,6 @@ class BarangMasukController extends Controller
             $produk->stok += $request->jumlah;
             $produk->save();
 
-            // =========================
-            // LOGIC PEMBAYARAN
-            // =========================
             if ($request->status_pembayaran == 'lunas') {
 
                 Pengeluaran::create([
@@ -109,7 +103,7 @@ class BarangMasukController extends Controller
                     'total_hutang' => $total,
                     'sisa_hutang' => $total,
                     'total_terbayar' => 0,
-                    'status' => 'Belum Lunas',
+                    'status' => 'hutang',
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
@@ -119,9 +113,6 @@ class BarangMasukController extends Controller
             ->with('success', 'Barang masuk berhasil ditambahkan');
     }
 
-    // =========================
-    // UPDATE
-    // =========================
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -156,15 +147,10 @@ class BarangMasukController extends Controller
             $produkBaru->stok += $request->jumlah;
             $produkBaru->save();
 
-            // =========================
-            // HAPUS RELASI LAMA
-            // =========================
+
             Pengeluaran::where('barang_masuk_id', $barang->barang_masuk_id)->delete();
             HutangPembelian::where('barang_masuk_id', $barang->barang_masuk_id)->delete();
 
-            // =========================
-            // LOGIC PEMBAYARAN
-            // =========================
             if ($request->status_pembayaran == 'lunas') {
 
                 Pengeluaran::create([
@@ -184,7 +170,7 @@ class BarangMasukController extends Controller
                     'total_hutang' => $total,
                     'sisa_hutang' => $total,
                     'total_terbayar' => 0,
-                    'status' => 'Belum Lunas',
+                    'status' => 'hutang',
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
@@ -194,9 +180,6 @@ class BarangMasukController extends Controller
             ->with('success', 'Barang masuk berhasil diupdate');
     }
 
-    // =========================
-    // DELETE
-    // =========================
     public function destroy($id)
     {
         DB::transaction(function () use ($id) {

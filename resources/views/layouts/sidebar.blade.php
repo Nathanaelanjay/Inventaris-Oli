@@ -66,6 +66,15 @@
                 Kategori
             </a>
 
+            <!-- Pelanggan -->
+            <a href="/pelanggan"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+                {{ request()->is('pelanggan*') ? 'text-white font-semibold' : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-800' }}"
+                style="{{ request()->is('pelanggan*') ? 'background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);' : '' }}">
+                <i class="fas fa-user text-sm flex-shrink-0"></i>
+                Pelanggan
+            </a>
+
             <!-- Pemasok -->
             <a href="/pemasok"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all

@@ -44,6 +44,9 @@ Route::resource('kategori', KategoriController::class);
 // PEMASOK
 Route::resource('pemasok', PemasokController::class);
 
+// PELANGGAN
+Route::resource('pelanggan', PelangganController::class);
+
 // BARANG MASUK
 Route::resource('barangmasuk', BarangMasukController::class);
 
