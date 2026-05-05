@@ -53,8 +53,7 @@
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50">
                             <i class="fas fa-box text-blue-600 text-lg"></i>
                         </div>
-                        <span
-                            class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Aktif</span>
+                        <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">Aktif</span>
                     </div>
                     <p class="text-sm text-slate-500 font-medium">Total Produk</p>
                     <h2 class="text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">{{ $totalProduk }}</h2>
@@ -78,7 +77,7 @@
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50">
-                            <i class="fas fa-wallet text-blue-600 text-lg"></i>
+                            <i class="fas fa-wallet text-green-600 text-lg"></i>
                         </div>
                         <span
                             class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Rupiah</span>
@@ -86,7 +85,7 @@
 
                     <p class="text-sm text-slate-500 font-medium">Total Piutang</p>
 
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">
+                    <h2 class="text-3xl font-extrabold text-green-700 mt-1 tracking-tight">
                         Rp {{ number_format($totalPiutang, 0, ',', '.') }}
                     </h2>
 
@@ -97,14 +96,14 @@
                 <div class="bg-white rounded-2xl p-5 border border-slate-100 relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50">
-                            <i class="fas fa-file-invoice-dollar text-red-600 text-lg"></i>
+                            <i class="fas fa-file-invoice-dollar text-orange-500 text-lg"></i>
                         </div>
-                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-lg">Rupiah</span>
+                        <span class="text-xs font-semibold text-orange-500 bg-red-50 px-2 py-1 rounded-lg">Rupiah</span>
                     </div>
 
                     <p class="text-sm text-slate-500 font-medium">Total Hutang</p>
 
-                    <h2 class="text-3xl font-extrabold text-red-600 mt-1 tracking-tight">
+                    <h2 class="text-3xl font-extrabold text-orange-500 mt-1 tracking-tight">
                         Rp {{ number_format($totalHutang, 0, ',', '.') }}
                     </h2>
 
@@ -134,7 +133,7 @@
 
                 <!-- Pengeluaran -->
                 <div class="rounded-2xl p-6 relative overflow-hidden"
-                    style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
+                    style="background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);">
                     <div class="absolute top-0 right-0 w-32 h-32 rounded-full -mr-10 -mt-10 bg-white opacity-5"></div>
                     <div class="absolute bottom-0 left-0 w-20 h-20 rounded-full -ml-6 -mb-6 bg-white opacity-5"></div>
                     <div class="relative">
@@ -176,7 +175,7 @@
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-9 h-9 rounded-xl flex items-center justify-center"
-                            style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+                            style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
                             <i class="fas fa-triangle-exclamation w-4 h-4 text-white"></i>
                         </div>
                         <div>
@@ -185,8 +184,8 @@
                         </div>
                     </div>
                     <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-100 text-xs font-semibold text-orange-600">
-                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 border border-red-100 text-xs font-semibold text-red-600">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                         {{ \App\Models\Produk::whereColumn('stok', '<=', 'stok_minimum')->count() }} produk
                     </span>
                 </div>
@@ -236,8 +235,8 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-3">
                                                 <div
-                                                    class="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50 flex-shrink-0">
-                                                    <i class="fas fa-box text-orange-500 text-sm"></i>
+                                                    class="w-8 h-8 rounded-lg flex items-center justify-center bg-red-50 flex-shrink-0">
+                                                    <i class="fas fa-box text-red-500 text-sm"></i>
                                                 </div>
                                                 <span
                                                     class="text-sm font-semibold text-slate-800">{{ $item->nama_barang }}</span>
@@ -266,8 +265,8 @@
                                                 </span>
                                             @else
                                                 <span
-                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 text-orange-700 text-xs font-semibold border border-orange-200">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-semibold border border-red-200">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                                                     Stok Menipis
                                                 </span>
                                             @endif

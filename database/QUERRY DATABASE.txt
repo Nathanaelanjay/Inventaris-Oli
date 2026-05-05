@@ -194,3 +194,20 @@ CREATE TABLE piutang_pelanggan (
 
     FOREIGN KEY (barang_keluar_id) REFERENCES barang_keluar(barang_keluar_id)
 );
+
+-- ========================
+-- LOG AKTIVITAS ADMIN
+-- ========================
+CREATE TABLE log_aktivitas(
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    aktivitas VARCHAR(255) NOT NULL,
+    tabel_terkait VARCHAR(100),
+    data_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);

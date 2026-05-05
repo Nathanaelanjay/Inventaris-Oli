@@ -307,10 +307,10 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <input name="harga_beli" type="number" placeholder="Harga Beli"
+                    <input name="harga_beli" id="harga_beli" type="text" placeholder="Harga Beli"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm">
 
-                    <input name="harga_jual" type="number" placeholder="Harga Jual"
+                    <input name="harga_jual" id="harga_jual" type="text" placeholder="Harga Jual"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm">
                 </div>
 
@@ -329,7 +329,8 @@
                 </select>
 
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('createModal')" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
+                    <button type="button" onclick="closeModal('createModal')"
+                        class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
                     <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl">
@@ -397,13 +398,13 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-xs text-slate-500">Harga Beli</label>
-                        <input id="e_harga_beli" name="harga_beli" type="number"
+                        <input id="e_harga_beli" name="harga_beli" type="text"
                             class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
 
                     <div>
                         <label class="text-xs text-slate-500">Harga Jual</label>
-                        <input id="e_harga_jual" name="harga_jual" type="number"
+                        <input id="e_harga_jual" name="harga_jual" type="text"
                             class="w-full border rounded-xl px-3 py-2.5 text-sm">
                     </div>
                 </div>
@@ -427,7 +428,8 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
+                    <button type="button" onclick="closeModal('editModal')"
+                        class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 
@@ -442,6 +444,32 @@
 
     <!-- SCRIPT -->
     <script>
+
+        function formatRupiah(angka) {
+            let number_string = angka.toString().replace(/[^,\d]/g, ''),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            return rupiah ? 'Rp ' + rupiah : '';
+        }
+
+        const hargaBeli = document.getElementById('harga_beli');
+        const hargaJual = document.getElementById('harga_jual');
+
+        hargaBeli.addEventListener('keyup', function () {
+            this.value = formatRupiah(this.value);
+        });
+
+        hargaJual.addEventListener('keyup', function () {
+            this.value = formatRupiah(this.value);
+        });
 
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
@@ -464,8 +492,8 @@
             document.getElementById('e_nama').value = data.nama_barang;
             document.getElementById('e_stok').value = data.stok;
             document.getElementById('e_stok_minimum').value = data.stok_minimum;
-            document.getElementById('e_harga_beli').value = data.harga_beli;
-            document.getElementById('e_harga_jual').value = data.harga_jual;
+            document.getElementById('e_harga_beli').value = formatRupiah(data.harga_beli.toString());
+            document.getElementById('e_harga_jual').value = formatRupiah(data.harga_jual.toString());
             document.getElementById('e_kategori').value = data.kategori_id;
             document.getElementById('e_pemasok').value = data.pemasok_id;
         }

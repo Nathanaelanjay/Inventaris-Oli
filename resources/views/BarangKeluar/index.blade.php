@@ -9,7 +9,6 @@
     @vite('resources/css/app.css')
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
@@ -94,14 +93,16 @@
                             </select>
 
                             {{-- BUTTON --}}
-                            <div class="flex gap-2">
+                            <div class="flex gap-2 w-full md:w-auto md:ml-auto">
+                                <!-- Filter -->
                                 <button type="submit"
-                                    class="w-full bg-emerald-500 text-white rounded-xl px-4 py-2 text-sm">
+                                    class="w-full md:w-40 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-4 py-2 text-sm transition">
                                     Filter
                                 </button>
 
+                                <!-- Reset -->
                                 <a href="{{ url()->current() }}"
-                                    class="w-full text-center bg-slate-200 rounded-xl px-4 py-2 text-sm">
+                                    class="w-full md:w-40 text-center bg-slate-200 hover:bg-slate-300 rounded-xl px-4 py-2 text-sm transition">
                                     Reset
                                 </a>
                             </div>
@@ -286,7 +287,7 @@
 
                         @foreach($produk as $p)
                             <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_jual }}">
-                                {{ $p->nama_barang }}
+                                {{ $p->nama_barang }} | Stok: {{ $p->stok }} | Rp {{ number_format($p->harga_jual,0,',','.') }}
                             </option>
                         @endforeach
 
@@ -310,7 +311,7 @@
                     <label class="text-xs text-slate-500">Status Pembayaran</label>
                     <select name="status_pembayaran" id="status_pembayaran" onchange="toggleJatuhTempo()"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
-
+                        <option value="">-- Pilih Pembayaran --</option>
                         <option value="lunas">Lunas</option>
                         <option value="hutang">Hutang</option>
 
@@ -416,7 +417,7 @@
 
                         @foreach($produk as $p)
                             <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_jual }}">
-                                {{ $p->nama_barang }}
+                                {{ $p->nama_barang }} | Stok: {{ $p->stok }} | Rp {{ number_format($p->harga_jual,0,',','.') }}
                             </option>
                         @endforeach
 
@@ -607,6 +608,7 @@
         }
 
     </script>
+    
 </body>
 
 </html>

@@ -55,13 +55,25 @@ class ProdukController extends Controller
             'nama_barang' => 'required',
             'stok' => 'required|numeric',
             'stok_minimum' => 'required|numeric',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
+            'harga_beli' => 'required',
+            'harga_jual' => 'required',
             'kategori_id' => 'required',
             'pemasok_id' => 'required',
         ]);
 
-        Produk::create($request->all());
+        $harga_beli = str_replace(['Rp', '.', ' '], '', $request->harga_beli);
+        $harga_jual = str_replace(['Rp', '.', ' '], '', $request->harga_jual);
+
+        Produk::create([
+            'kode_barang' => $request->kode_barang,
+            'nama_barang' => $request->nama_barang,
+            'stok' => $request->stok,
+            'stok_minimum' => $request->stok_minimum,
+            'harga_beli' => $harga_beli,
+            'harga_jual' => $harga_jual,
+            'kategori_id' => $request->kategori_id,
+            'pemasok_id' => $request->pemasok_id,
+        ]);
 
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil ditambahkan');
@@ -87,21 +99,24 @@ class ProdukController extends Controller
             'nama_barang' => 'required',
             'stok' => 'required|numeric',
             'stok_minimum' => 'required|numeric',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
+            'harga_beli' => 'required',
+            'harga_jual' => 'required',
             'kategori_id' => 'required',
             'pemasok_id' => 'required',
         ]);
 
         $produk = Produk::findOrFail($id);
 
+        $harga_beli = str_replace(['Rp', '.', ' '], '', $request->harga_beli);
+        $harga_jual = str_replace(['Rp', '.', ' '], '', $request->harga_jual);
+
         $produk->update([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'stok' => $request->stok,
             'stok_minimum' => $request->stok_minimum,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
+            'harga_beli' => $harga_beli,
+            'harga_jual' => $harga_jual,
             'kategori_id' => $request->kategori_id,
             'pemasok_id' => $request->pemasok_id,
         ]);

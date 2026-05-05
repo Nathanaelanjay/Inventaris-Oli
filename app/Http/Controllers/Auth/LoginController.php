@@ -28,11 +28,12 @@ class LoginController extends Controller
 
             $user = Auth::user();
 
-            if ($user->role->nama_role == 'Super Admin') {
-                return redirect('/superadmin');
+            // CEK ROLE
+            if ($user->role->nama_role === 'Super Admin') {
+                return redirect()->route('dashboard.admin');
             }
 
-            return redirect('/dashboard');
+            return redirect()->route('dashboard');
         }
 
         return back()->with('error', 'Email atau password salah');

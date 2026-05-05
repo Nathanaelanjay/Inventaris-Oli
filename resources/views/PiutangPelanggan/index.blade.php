@@ -70,13 +70,15 @@
                             </select>
 
                             <div class="flex gap-2 w-full md:w-auto md:ml-auto">
+                                <!-- Filter -->
                                 <button type="submit"
-                                    class="w-full md:w-40 bg-emerald-500 text-white rounded-xl px-4 py-2 text-sm">
+                                    class="w-full md:w-40 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-4 py-2 text-sm transition">
                                     Filter
                                 </button>
 
+                                <!-- Reset -->
                                 <a href="{{ url()->current() }}"
-                                    class="w-full md:w-40 text-center bg-slate-200 rounded-xl px-4 py-2 text-sm">
+                                    class="w-full md:w-40 text-center bg-slate-200 hover:bg-slate-300 rounded-xl px-4 py-2 text-sm transition">
                                     Reset
                                 </a>
                             </div>

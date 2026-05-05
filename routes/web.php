@@ -12,6 +12,7 @@ use App\Http\Controllers\PemasokController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PiutangPelangganController;
 use App\Http\Controllers\HutangPembelianController;
+use App\Http\Controllers\SuperAdminController;
 
 Route::get('/', [LoginController::class, 'showLogin']);
 
@@ -35,7 +36,13 @@ Route::post('/register', [RegisterController::class, 'register']);
 
 // PROTECTED
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/dashboardadmin', [SuperAdminController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard.admin');
+
 });
 
 // KATEGORI
@@ -72,3 +79,9 @@ Route::post('/hutang-pembelian/bayar/{id}', [HutangPembelianController::class, '
 
 Route::delete('/hutang-pembelian/{id}', [HutangPembelianController::class, 'destroy'])
     ->name('hutang.destroy');
+
+
+// SUPER ADMIN
+Route::get('/superadmin', [SuperAdminController::class, 'index'])
+    ->middleware('auth');
+Route::post('/admin/store', [SuperAdminController::class, 'store'])->name('admin.store');
