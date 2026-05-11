@@ -25,7 +25,7 @@
 
     <!-- Navigation -->
     <nav class="flex-1 px-3 py-4 overflow-y-auto">
-        <p class="text-xs font-semibold text-slate-400 uppercase px-3 mb-3">Menu</p>
+        <p class="text-xs font-semibold text-slate-400 uppercase px-3 mb-3">Menu Utama</p>
 
         <div class="space-y-1">
 
@@ -36,15 +36,6 @@
                 <i class="fas fa-chart-line"></i>
                 Dashboard
             </a>
-
-            <!-- Log Aktivitas -->
-            <a href="/log-activity"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
-                {{ $isLog ? 'text-white font-semibold bg-purple-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800' }}">
-                <i class="fas fa-clock-rotate-left"></i>
-                Log Aktivitas
-            </a>
-
         </div>
     </nav>
 

@@ -11,6 +11,7 @@ use App\Models\HutangPembelian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Helpers\LogHelper;
 
 class BarangMasukController extends Controller
 {
@@ -38,7 +39,7 @@ class BarangMasukController extends Controller
             });
         }
 
-        $barangMasuk = $query->latest()->get();
+        $barangMasuk = $query->latest()->paginate(10);
 
         $produk = Produk::all();
         $kategori = Kategori::all();
@@ -69,7 +70,7 @@ class BarangMasukController extends Controller
             // SIMPAN BARANG
             $barang = BarangMasuk::create([
                 'produk_id' => $request->produk_id,
-                'user_id' => 1,
+                'user_id' => auth()->user()->user_id,
                 'jumlah' => $request->jumlah,
                 'harga_beli' => $request->harga_beli,
                 'total' => $total,
@@ -107,6 +108,11 @@ class BarangMasukController extends Controller
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
+            LogHelper::simpan(
+                'Menambahkan barang masuk: ' . $produk->nama_barang,
+                'barang_masuk',
+                $barang->barang_masuk_id
+            );
         });
 
         return redirect()->route('barangmasuk.index')
@@ -174,7 +180,13 @@ class BarangMasukController extends Controller
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
+            LogHelper::simpan(
+                'Mengupdate barang masuk: ' . $produkBaru->nama_barang,
+                'barang_masuk',
+                $barang->barang_masuk_id
+            );
         });
+
 
         return redirect()->route('barangmasuk.index')
             ->with('success', 'Barang masuk berhasil diupdate');
@@ -194,7 +206,11 @@ class BarangMasukController extends Controller
             $produk = Produk::findOrFail($barang->produk_id);
             $produk->stok -= $barang->jumlah;
             $produk->save();
-
+                LogHelper::simpan(
+                    'Menghapus barang masuk: ' . $produk->nama_barang,
+                    'barang_masuk',
+                    $barang->barang_masuk_id
+                );
             // HAPUS DATA
             $barang->delete();
         });

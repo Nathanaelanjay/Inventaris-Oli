@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper;
 
 class PemasokController extends Controller
 {
@@ -21,11 +22,17 @@ class PemasokController extends Controller
             'alamat' => 'nullable|string',
         ]);
 
-        Pemasok::create([
+        $pemasok = Pemasok::create([
             'nama_pemasok' => $request->nama_pemasok,
             'kontak' => $request->kontak,
             'alamat' => $request->alamat,
         ]);
+
+        LogHelper::simpan(
+            'Menambahkan pemasok: ' . $pemasok->nama_pemasok,
+            'pemasok',
+            $pemasok->pemasok_id
+        );
 
         return redirect()->back()->with('success', 'Pemasok berhasil ditambahkan');
     }
@@ -46,6 +53,12 @@ class PemasokController extends Controller
             'alamat' => $request->alamat,
         ]);
 
+        LogHelper::simpan(
+            'Mengupdate pemasok: ' . $request->nama_pemasok,
+            'pemasok',
+            $pemasok->pemasok_id
+        );
+
         return redirect()->back()->with('success', 'Pemasok berhasil diupdate');
     }
 
@@ -57,7 +70,11 @@ class PemasokController extends Controller
         if ($pemasok->produk()->count() > 0) {
             return redirect()->back()->with('error', 'Pemasok tidak bisa dihapus karena masih digunakan oleh produk!');
         }
-
+        LogHelper::simpan(
+            'Menghapus pemasok: ' . $pemasok->nama_pemasok,
+            'pemasok',
+            $pemasok->pemasok_id
+        );
         $pemasok->delete();
 
         return redirect()->back()->with('success', 'Pemasok berhasil dihapus');

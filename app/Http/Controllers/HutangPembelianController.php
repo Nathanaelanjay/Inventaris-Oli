@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\HutangPembelian;
 use App\Models\Pengeluaran;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\LogHelper;
 
 class HutangPembelianController extends Controller
 {
@@ -17,7 +18,7 @@ class HutangPembelianController extends Controller
             $query->where('status', $request->status);
         }
 
-        $hutang = $query->latest()->get();
+        $hutang = $query->latest()->paginate(10);
 
         return view('hutangpembelian.index', compact('hutang'));
     }
@@ -28,7 +29,7 @@ class HutangPembelianController extends Controller
             'jumlah_bayar' => 'required|numeric|min:1'
         ]);
 
-        $hutang = HutangPembelian::findOrFail($id);
+        $hutang = HutangPembelian::with('barangMasuk.produk')->findOrFail($id);
 
         try {
 
@@ -58,18 +59,35 @@ class HutangPembelianController extends Controller
                     'keterangan' => 'Pembayaran Hutang Pembelian',
                     'barang_masuk_id' => $hutang->barang_masuk_id
                 ]);
+
+                LogHelper::simpan(
+                    'Membayar hutang pembelian produk '
+                    . $hutang->barangMasuk->produk->nama_barang .
+                    ' sebesar Rp ' .
+                    number_format($bayar, 0, ',', '.'),
+                    'hutang_pembelian',
+                    $hutang->hutang_id
+                );
             });
 
             return back()->with('success', 'Pembayaran hutang berhasil!');
 
         } catch (\Exception $e) {
+
             return back()->with('error', $e->getMessage());
         }
     }
 
     public function destroy($id)
     {
-        HutangPembelian::findOrFail($id)->delete();
+        $hutang = HutangPembelian::findOrFail($id);
+        LogHelper::simpan(
+            'Menghapus hutang pembelian produk: '
+            . $hutang->barangMasuk->produk->nama_barang,
+            'hutang_pembelian',
+            $hutang->hutang_id
+        );
+        $hutang->delete();
 
         return back()->with('success', 'Data hutang dihapus');
     }

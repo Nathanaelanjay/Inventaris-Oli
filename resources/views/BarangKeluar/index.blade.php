@@ -62,6 +62,9 @@
                             {{ $barangKeluar->count() }} data ditemukan
                         </span>
                     </div>
+
+                    {{-- FILTER --}}
+
                     <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
 
@@ -108,6 +111,7 @@
                             </div>
                         </div>
                     </form>
+
                     <!-- TABLE -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
@@ -235,6 +239,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <!-- PAGINATION -->
+                        <div class="px-6 py-4 border-t border-slate-100">
+                            {{ $barangKeluar->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

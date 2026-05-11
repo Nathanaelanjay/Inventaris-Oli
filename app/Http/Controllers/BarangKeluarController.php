@@ -12,6 +12,7 @@ use App\Models\PiutangPelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Helpers\LogHelper;
 
 class BarangKeluarController extends Controller
 {
@@ -53,7 +54,7 @@ class BarangKeluarController extends Controller
             });
         }
 
-        $barangKeluar = $query->latest()->get();
+        $barangKeluar = $query->latest()->paginate(10);
 
         $produk = Produk::all();
         $pelanggan = Pelanggan::all();
@@ -95,7 +96,7 @@ class BarangKeluarController extends Controller
             // SIMPAN BARANG KELUAR
             $barang = BarangKeluar::create([
                 'produk_id' => $request->produk_id,
-                'user_id' => auth()->id(),
+                'user_id' => auth()->user()->user_id,
                 'pelanggan_id' => $request->pelanggan_id,
                 'jumlah' => $request->jumlah,
                 'harga_jual' => $request->harga_jual,
@@ -134,7 +135,11 @@ class BarangKeluarController extends Controller
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
-
+            LogHelper::simpan(
+                'Menambahkan barang keluar: ' . $produk->nama_barang,
+                'barang_keluar',
+                $barang->barang_keluar_id
+            );
         });
 
         return redirect()->route('barangkeluar.index')
@@ -211,6 +216,11 @@ class BarangKeluarController extends Controller
                     'tanggal_jatuh_tempo' => $jatuhTempo
                 ]);
             }
+            LogHelper::simpan(
+                'Mengupdate barang keluar: ' . $produkBaru->nama_barang,
+                'barang_keluar',
+                $barang->barang_keluar_id
+            );
         });
 
         return redirect()->route('barangkeluar.index')
@@ -232,9 +242,16 @@ class BarangKeluarController extends Controller
 
             // HAPUS PIUTANG
             PiutangPelanggan::where('barang_keluar_id', $barang->barang_keluar_id)->delete();
+            
+            LogHelper::simpan(
+                'Menghapus barang keluar: ' . $produk->nama_barang,
+                'barang_keluar',
+                $barang->barang_keluar_id
+            );
 
             // HAPUS BARANG
             $barang->delete();
+
         });
 
         return redirect()->route('barangkeluar.index')

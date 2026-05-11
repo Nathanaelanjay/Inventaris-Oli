@@ -239,6 +239,10 @@
                             </tbody>
 
                         </table>
+                        <!-- PAGINATION -->
+                        <div class="px-6 py-4 border-t border-slate-100">
+                            {{ $barangMasuk->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -291,7 +295,8 @@
 
                         @foreach($produk as $p)
                             <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_jual }}">
-                                {{ $p->nama_barang }} | Stok: {{ $p->stok }} | Rp {{ number_format($p->harga_jual,0,',','.') }}
+                                {{ $p->nama_barang }} | Stok: {{ $p->stok }} | Rp
+                                {{ number_format($p->harga_jual, 0, ',', '.') }}
                             </option>
                         @endforeach
 
@@ -409,7 +414,8 @@
 
                         @foreach($produk as $p)
                             <option value="{{ $p->produk_id }}" data-harga="{{ $p->harga_jual }}">
-                                {{ $p->nama_barang }} | Stok: {{ $p->stok }} | Rp {{ number_format($p->harga_jual,0,',','.') }}
+                                {{ $p->nama_barang }} | Stok: {{ $p->stok }} | Rp
+                                {{ number_format($p->harga_jual, 0, ',', '.') }}
                             </option>
                         @endforeach
 

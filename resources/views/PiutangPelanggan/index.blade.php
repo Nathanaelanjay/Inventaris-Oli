@@ -56,11 +56,13 @@
                         <span class="text-xs text-slate-400">{{ $piutang->count() }} data</span>
                     </div>
 
+                    <!-- Filter -->
                     <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
                         <div class="flex flex-col md:flex-row gap-3 items-center">
 
                             <!-- STATUS -->
-                            <select name="status" class="w-full md:w-64 border rounded-xl px-3 py-2 text-sm">
+                            <select name="status"
+                                class="w-full md:w-64 border border-slate-200 rounded-xl px-3 py-2 text-sm">
                                 <option value="">Semua Status</option>
                                 <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
                                 <option value="hutang" {{ request('status') == 'hutang' ? 'selected' : '' }}>Hutang
@@ -69,6 +71,7 @@
                                 </option>
                             </select>
 
+                            {{-- BUTTON --}}
                             <div class="flex gap-2 w-full md:w-auto md:ml-auto">
                                 <!-- Filter -->
                                 <button type="submit"
@@ -85,6 +88,7 @@
 
                         </div>
                     </form>
+
                     <!-- TABLE -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
@@ -178,6 +182,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <!-- PAGINATION -->
+                        <div class="px-6 py-4 border-t border-slate-100">
+                            {{ $piutang->links() }}
+                        </div>
                     </div>
 
                 </div>

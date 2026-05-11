@@ -7,6 +7,7 @@ use App\Models\PiutangPelanggan;
 use App\Models\Pemasukan;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Helpers\LogHelper;
 
 class PiutangPelangganController extends Controller
 {
@@ -18,7 +19,7 @@ class PiutangPelangganController extends Controller
             $query->where('status', $request->status);
         }
 
-        $piutang = $query->latest()->get();
+        $piutang = $query->latest()->paginate(10);
 
         return view('piutangpelanggan.index', compact('piutang'));
     }
@@ -29,7 +30,8 @@ class PiutangPelangganController extends Controller
             'jumlah_bayar' => 'required|numeric|min:1'
         ]);
 
-        $piutang = PiutangPelanggan::findOrFail($id);
+        $piutang = PiutangPelanggan::with('barangKeluar.pelanggan')
+            ->findOrFail($id);
 
         try {
 
@@ -61,17 +63,35 @@ class PiutangPelangganController extends Controller
                     'keterangan' => 'Pembayaran Piutang Pelanggan',
                     'barang_keluar_id' => $piutang->barang_keluar_id
                 ]);
+
+                LogHelper::simpan(
+                    'Membayar piutang pelanggan: '
+                    . $piutang->barangKeluar->pelanggan->nama_bengkel,
+                    'piutang_pelanggan',
+                    $piutang->piutang_id
+                );
             });
 
             return back()->with('success', 'Pembayaran berhasil!');
 
         } catch (\Exception $e) {
+
             return back()->with('error', $e->getMessage());
         }
     }
+
     public function destroy($id)
     {
-        $piutang = PiutangPelanggan::findOrFail($id);
+        $piutang = PiutangPelanggan::with('barangKeluar.pelanggan')
+            ->findOrFail($id);
+
+        LogHelper::simpan(
+            'Menghapus piutang pelanggan: '
+            . $piutang->barangKeluar->pelanggan->nama_bengkel,
+            'piutang_pelanggan',
+            $piutang->piutang_id
+        );
+
         $piutang->delete();
 
         return redirect()->back()->with('success', 'Data piutang dihapus');

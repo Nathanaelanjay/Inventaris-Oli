@@ -82,6 +82,8 @@ Route::delete('/hutang-pembelian/{id}', [HutangPembelianController::class, 'dest
 
 
 // SUPER ADMIN
-Route::get('/superadmin', [SuperAdminController::class, 'index'])
-    ->middleware('auth');
-Route::post('/admin/store', [SuperAdminController::class, 'store'])->name('admin.store');
+Route::get('/dashboardadmin', [SuperAdminController::class, 'index'])
+    ->name('dashboard.admin');
+
+Route::post('/admin/store', [SuperAdminController::class, 'store'])
+    ->name('admin.store');

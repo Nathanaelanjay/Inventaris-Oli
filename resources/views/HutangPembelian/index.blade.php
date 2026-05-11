@@ -68,7 +68,8 @@
                         <div class="flex flex-col md:flex-row gap-3 items-center">
 
                             <!-- STATUS -->
-                            <select name="status" class="w-full md:w-64 border rounded-xl px-3 py-2 text-sm">
+                            <select name="status"
+                                class="w-full md:w-64 border border-slate-200 rounded-xl px-3 py-2 text-sm">
                                 <option value="">Semua Status</option>
                                 <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
                                 <option value="hutang" {{ request('status') == 'hutang' ? 'selected' : '' }}>Hutang
@@ -183,6 +184,10 @@
                             </tbody>
 
                         </table>
+                        <!-- PAGINATION -->
+                        <div class="px-6 py-4 border-t border-slate-100">
+                            {{ $hutang->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

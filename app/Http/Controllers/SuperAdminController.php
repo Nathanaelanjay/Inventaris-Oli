@@ -13,27 +13,44 @@ class SuperAdminController extends Controller
     // ========================
     // DASHBOARD SUPER ADMIN
     // ========================
-    public function index()
+    public function index(Request $request)
     {
-        // Hitung total admin
+        // TOTAL ADMIN
         $totalAdmin = User::whereHas('role', function ($q) {
             $q->where('nama_role', 'Admin');
         })->count();
 
-        // Hitung aktivitas hari ini
-        $totalLog = LogAktivitas
-    ::whereDate('created_at', today())->count();
+        // TOTAL LOG HARI INI
+        $totalLog = LogAktivitas::whereDate('created_at', today())
+            ->count();
 
-        // Ambil 10 log terbaru
-        $logs = LogAktivitas
-    ::with('user')
-            ->latest()
-            ->take(10)
-            ->get();
+        // TOTAL SEMUA LOG
+        $totalLogAll = LogAktivitas::count();
+
+        // QUERY LOG
+        $query = LogAktivitas::with('user');
+
+        // FILTER TANGGAL
+        if ($request->tanggal) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        // FILTER AKTIVITAS
+        if ($request->aktivitas) {
+            $query->where(
+                'aktivitas',
+                'like',
+                '%' . $request->aktivitas . '%'
+            );
+        }
+
+        // PAGINATION
+        $logs = $query->latest()->paginate(10);
 
         return view('dashboardadmin', compact(
             'totalAdmin',
             'totalLog',
+            'totalLogAll',
             'logs'
         ));
     }
@@ -41,7 +58,7 @@ class SuperAdminController extends Controller
     // ========================
     // TAMBAH ADMIN
     // ========================
-    public function storeAdmin(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required',
@@ -49,10 +66,8 @@ class SuperAdminController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        // Ambil role Admin
         $roleAdmin = Role::where('nama_role', 'Admin')->first();
 
-        // Simpan user admin baru
         $user = User::create([
             'nama' => $request->nama,
             'email' => $request->email,
@@ -60,12 +75,12 @@ class SuperAdminController extends Controller
             'role_id' => $roleAdmin->role_id
         ]);
 
-        // Simpan log aktivitas
-        LogActivity::create([
+        LogAktivitas::create([
             'user_id' => auth()->user()->user_id,
             'aktivitas' => 'Menambahkan admin baru: ' . $user->nama
         ]);
 
-        return back()->with('success', 'Admin berhasil ditambahkan');
+        return redirect()->route('dashboard.admin')
+            ->with('success', 'Admin berhasil ditambahkan');
     }
 }

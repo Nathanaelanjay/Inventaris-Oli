@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper;
 
 class PelangganController extends Controller
 {
     public function index()
     {
-        $pelanggan = Pelanggan::all(); 
+        $pelanggan = Pelanggan::all();
 
         return view('pelanggan.index', compact('pelanggan'));
     }
@@ -22,11 +23,17 @@ class PelangganController extends Controller
             'alamat' => 'nullable',
         ]);
 
-        Pelanggan::create([
+        $pelanggan = Pelanggan::create([
             'nama_bengkel' => $request->nama_bengkel,
             'no_telp' => $request->no_telp,
             'alamat' => $request->alamat,
         ]);
+
+        LogHelper::simpan(
+            'Menambahkan pelanggan: ' . $pelanggan->nama_bengkel,
+            'pelanggan',
+            $pelanggan->pelanggan_id
+        );
 
         return redirect()->route('pelanggan.index')
             ->with('success', 'Data pelanggan berhasil ditambahkan');
@@ -48,6 +55,12 @@ class PelangganController extends Controller
             'alamat' => $request->alamat,
         ]);
 
+        LogHelper::simpan(
+            'Mengupdate pelanggan: ' . $request->nama_bengkel,
+            'pelanggan',
+            $pelanggan->pelanggan_id
+        );
+
         return redirect()->route('pelanggan.index')
             ->with('success', 'Data pelanggan berhasil diupdate');
     }
@@ -55,6 +68,11 @@ class PelangganController extends Controller
     public function destroy($id)
     {
         $pelanggan = Pelanggan::findOrFail($id);
+        LogHelper::simpan(
+            'Menghapus pelanggan: ' . $pelanggan->nama_bengkel,
+            'pelanggan',
+            $pelanggan->pelanggan_id
+        );
         $pelanggan->delete();
 
         return redirect()->route('pelanggan.index')

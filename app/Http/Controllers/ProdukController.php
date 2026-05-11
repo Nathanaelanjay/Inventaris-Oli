@@ -6,6 +6,7 @@ use App\Models\Produk;
 use App\Models\Kategori;
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper;
 
 class ProdukController extends Controller
 {
@@ -28,7 +29,7 @@ class ProdukController extends Controller
             $query->orderBy('stok', $request->stok);
         }
 
-        $produk = $query->get();
+        $produk = $query->paginate(10);
 
         $kategori = Kategori::all();
         $pemasok = Pemasok::all();
@@ -64,7 +65,7 @@ class ProdukController extends Controller
         $harga_beli = str_replace(['Rp', '.', ' '], '', $request->harga_beli);
         $harga_jual = str_replace(['Rp', '.', ' '], '', $request->harga_jual);
 
-        Produk::create([
+        $produk = Produk::create([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'stok' => $request->stok,
@@ -74,6 +75,12 @@ class ProdukController extends Controller
             'kategori_id' => $request->kategori_id,
             'pemasok_id' => $request->pemasok_id,
         ]);
+
+        LogHelper::simpan(
+            'Menambahkan produk: ' . $produk->nama_barang,
+            'produk',
+            $produk->produk_id
+        );
 
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil ditambahkan');
@@ -121,6 +128,12 @@ class ProdukController extends Controller
             'pemasok_id' => $request->pemasok_id,
         ]);
 
+        LogHelper::simpan(
+            'Mengupdate produk: ' . $request->nama_barang,
+            'produk',
+            $produk->produk_id
+        );
+
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil diupdate');
     }
@@ -128,7 +141,13 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
+        LogHelper::simpan(
+            'Menghapus produk: ' . $produk->nama_barang,
+            'produk',
+            $produk->produk_id
+        );
         $produk->delete();
+
 
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil dihapus');
