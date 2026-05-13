@@ -138,7 +138,7 @@
                                     <tr class="hover:bg-slate-50/70 transition-colors">
 
                                         <td class="px-6 py-3.5 text-xs text-slate-500">
-                                            {{ $i + 1 }}
+                                            {{ $barangKeluar->firstItem() + $i }}
                                         </td>
 
                                         <td class="px-6 py-3">

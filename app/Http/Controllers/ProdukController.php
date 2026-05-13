@@ -52,7 +52,6 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_barang' => 'required',
             'nama_barang' => 'required',
             'stok' => 'required|numeric',
             'stok_minimum' => 'required|numeric',
@@ -66,7 +65,6 @@ class ProdukController extends Controller
         $harga_jual = str_replace(['Rp', '.', ' '], '', $request->harga_jual);
 
         $produk = Produk::create([
-            'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'stok' => $request->stok,
             'stok_minimum' => $request->stok_minimum,
@@ -102,7 +100,6 @@ class ProdukController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'kode_barang' => 'required',
             'nama_barang' => 'required',
             'stok' => 'required|numeric',
             'stok_minimum' => 'required|numeric',
@@ -118,7 +115,6 @@ class ProdukController extends Controller
         $harga_jual = str_replace(['Rp', '.', ' '], '', $request->harga_jual);
 
         $produk->update([
-            'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'stok' => $request->stok,
             'stok_minimum' => $request->stok_minimum,

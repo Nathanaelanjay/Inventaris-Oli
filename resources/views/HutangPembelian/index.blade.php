@@ -117,7 +117,9 @@
                                 @forelse ($hutang as $i => $h)
                                     <tr class="hover:bg-slate-50/70">
 
-                                        <td class="px-6 py-3 text-xs text-slate-500">{{ $i + 1 }}</td>
+                                        <td class="px-6 py-3 text-xs text-slate-500">
+                                            {{ $hutang->firstItem() + $i }}
+                                        </td>
 
                                         <td class="px-6 py-3">
                                             <div class="font-medium text-slate-800">
@@ -157,9 +159,15 @@
                                         <td class="px-6 py-3">
                                             <div class="flex justify-center">
                                                 @if($h->status != 'lunas')
-                                                    <button onclick="openBayarModal({{ $h->hutang_id }})"
+                                                    <button onclick="openBayarModal(
+                                                                                    {{ $h->hutang_id }},
+                                                                                    '{{ addslashes(data_get($h, 'barangMasuk.produk.pemasok.nama_pemasok', '-')) }}',
+                                                                                    {{ $h->sisa_hutang }}
+                                                                                )"
                                                         class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs rounded-lg">
-                                                        <i class="fas fa-money-bill-wave"></i>Bayar
+
+                                                        <i class="fas fa-money-bill-wave"></i>
+                                                        Bayar
                                                     </button>
                                                 @else
                                                     <span class="text-xs text-slate-400">-</span>
@@ -220,6 +228,26 @@
             <!-- BODY -->
             <form method="POST" id="bayarForm" class="p-6">
                 @csrf
+                <!-- INFO -->
+                <div class="bg-slate-50 rounded-2xl p-4 space-y-3 mb-5">
+
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500">Pemasok</span>
+
+                        <span class="font-semibold text-slate-700" id="modal_pemasok">
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between text-sm">
+
+                        <span class="text-slate-500">Sisa Hutang</span>
+
+                        <span class="font-bold text-red-500" id="modal_sisa">
+                        </span>
+
+                    </div>
+
+                </div>
                 <input type="text" id="jumlah_bayar" placeholder="Masukkan jumlah bayar" autocomplete="off"
                     class="w-full border px-3 py-2 rounded-xl mb-4">
                 <input type="hidden" name="jumlah_bayar" id="jumlah_bayar_real">
@@ -240,11 +268,19 @@
 
     <!-- SCRIPT -->
     <script>
-        function openBayarModal(id) {
+        function openBayarModal(id, pemasok, sisa) {
             document.getElementById('bayarModal').classList.remove('hidden');
             let url = "{{ route('hutang.bayar', ':id') }}";
             url = url.replace(':id', id);
+
             document.getElementById('bayarForm').action = url;
+
+            document.getElementById('modal_pemasok')
+                .innerText = pemasok;
+
+            document.getElementById('modal_sisa')
+                .innerText =
+                'Rp ' + parseInt(sisa).toLocaleString('id-ID');
         }
 
         function closeModal(id) {

@@ -55,7 +55,7 @@
                             <span
                                 class="text-[10px] font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">Aktif</span>
                         </div>
-                        <p class="text-2xl font-bold text-slate-800">{{ $produk->count() }}</p>
+                        <p class="text-2xl font-bold text-slate-800">{{ $produk->total() }}</p>
                         <p class="text-xs text-slate-400 mt-0.5">Total produk terdaftar</p>
                     </div>
 
@@ -150,8 +150,8 @@
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="bg-slate-50 text-left">
-                                    <th class="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Kode</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        No</th>
                                     <th class="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Nama Produk</th>
                                     <th
@@ -171,13 +171,10 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
-                                @forelse ($produk as $p)
+                                @forelse ($produk as $i => $p)
                                     <tr class="hover:bg-slate-50/70 transition-colors group">
-                                        <td class="px-6 py-3.5">
-                                            <span
-                                                class="font-mono text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded">
-                                                {{ $p->kode_barang }}
-                                            </span>
+                                        <td class="px-6 py-3.5 text-xs text-slate-500">
+                                            {{ $produk->firstItem() + $i }}
                                         </td>
                                         <td class="px-4 py-3.5">
                                             <span class="font-medium text-slate-800">{{ $p->nama_barang }}</span>
@@ -294,9 +291,7 @@
             <form action="{{ route('produk.store') }}" method="POST" class="px-6 py-5 space-y-4">
                 @csrf
 
-                <div class="grid grid-cols-2 gap-4">
-                    <input name="kode_barang" placeholder="Kode Barang"
-                        class="w-full border rounded-xl px-3 py-2.5 text-sm">
+                <div class="grid  gap-4">
 
                     <input name="nama_barang" placeholder="Nama Barang"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm">
@@ -373,12 +368,7 @@
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-slate-500">Kode Barang</label>
-                        <input id="e_kode" name="kode_barang" class="w-full border rounded-xl px-3 py-2.5 text-sm">
-                    </div>
-
+                <div class="grid gap-4">
                     <div>
                         <label class="text-xs text-slate-500">Nama Barang</label>
                         <input id="e_nama" name="nama_barang" class="w-full border rounded-xl px-3 py-2.5 text-sm">
@@ -492,7 +482,6 @@
             document.getElementById('editForm').action =
                 '/produk/' + data.produk_id;
 
-            document.getElementById('e_kode').value = data.kode_barang;
             document.getElementById('e_nama').value = data.nama_barang;
             document.getElementById('e_stok').value = data.stok;
             document.getElementById('e_stok_minimum').value = data.stok_minimum;

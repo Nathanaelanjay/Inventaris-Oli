@@ -112,7 +112,7 @@
                                     <tr class="hover:bg-slate-50/70">
 
                                         <td class="px-6 py-3 text-xs text-slate-500">
-                                            {{ $i + 1 }}
+                                            {{ $piutang->firstItem() + $i }}
                                         </td>
 
                                         <td class="px-6 py-3">
@@ -154,8 +154,13 @@
                                             <div class="flex justify-center">
 
                                                 @if($p->status != 'lunas')
-                                                    <button onclick="openBayarModal({{ $p->piutang_id }})"
+                                                    <button onclick="openBayarModal(
+                                                                            {{ $p->piutang_id }},
+                                                                            '{{ addslashes(data_get($p, 'barangKeluar.pelanggan.nama_bengkel', '-')) }}',
+                                                                            {{ $p->sisa_piutang }}
+                                                                        )"
                                                         class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs rounded-lg">
+
                                                         <i class="fas fa-money-bill"></i>
                                                         Bayar
                                                     </button>
@@ -195,25 +200,29 @@
     </div>
 
     <!-- MODAL BAYAR -->
-    <div id="bayarModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div id="bayarModal" class="hidden fixed inset-0 z-50 flex items-start justify-center pt-24">
+
+        <!-- BACKDROP -->
         <div class="absolute inset-0 bg-black/50" onclick="closeModal('bayarModal')"></div>
 
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+        <!-- CARD -->
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-fadeIn">
 
             <!-- HEADER -->
             <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+
                 <div class="flex items-center gap-3">
 
-                    <div class="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-money-bill-wave text-emerald-600 text-sm"></i>
+                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-money-bill-wave text-emerald-600"></i>
                     </div>
 
                     <div>
-                        <h2 class="text-base font-bold text-slate-800">
+                        <h2 class="text-lg font-bold text-slate-800">
                             Bayar Piutang
                         </h2>
 
-                        <p class="text-xs text-slate-400">
+                        <p class="text-sm text-slate-400">
                             Lakukan pembayaran piutang pelanggan
                         </p>
                     </div>
@@ -226,38 +235,78 @@
             </div>
 
             <!-- BODY -->
-            <form method="POST" id="bayarForm" class="p-6">
+            <form method="POST" id="bayarForm" class="p-6 space-y-5">
                 @csrf
 
-                <input type="text" id="jumlah_bayar" class="w-full border px-3 py-2 rounded-xl mb-4"
-                    placeholder="Masukkan jumlah bayar" autocomplete="off">
+                <!-- INFO -->
+                <div class="bg-slate-50 rounded-2xl p-4 space-y-3">
 
-                <input type="hidden" name="jumlah_bayar" id="jumlah_bayar_real">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500">Pelanggan</span>
 
-                <div class="flex justify-end gap-2">
+                        <span class="font-semibold text-slate-700" id="modal_pelanggan">
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between text-sm">
+
+                        <span class="text-slate-500">Sisa Hutang</span>
+
+                        <span class="font-bold text-red-500" id="modal_sisa">
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- INPUT -->
+                <div>
+                    <label class="text-sm font-medium text-slate-600 mb-2 block">
+                        Jumlah Bayar
+                    </label>
+
+                    <input type="text" id="jumlah_bayar"
+                        class="w-full border border-slate-200 focus:border-blue-500 focus:ring focus:ring-blue-100 px-4 py-3 rounded-xl"
+                        placeholder="Masukkan jumlah bayar" autocomplete="off">
+
+                    <input type="hidden" name="jumlah_bayar" id="jumlah_bayar_real">
+                </div>
+
+                <!-- FOOTER -->
+                <div class="flex justify-end gap-3 pt-2">
+
                     <button type="button" onclick="closeModal('bayarModal')"
-                        class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50">
+                        class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50">
                         Batal
                     </button>
 
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl">
                         Bayar
                     </button>
+
                 </div>
             </form>
 
         </div>
     </div>
+    </div>
 
     <!-- SCRIPT -->
     <script>
-        function openBayarModal(id) {
+        function openBayarModal(id, pelanggan, sisa) {
             document.getElementById('bayarModal').classList.remove('hidden');
 
             let url = "{{ route('piutang.bayar', ':id') }}";
             url = url.replace(':id', id);
 
             document.getElementById('bayarForm').action = url;
+
+            document.getElementById('modal_pelanggan')
+                .innerText = pelanggan;
+
+            document.getElementById('modal_sisa')
+                .innerText = 'Rp ' + Number(sisa)
+                    .toLocaleString('id-ID');
         }
 
         function closeModal(id) {

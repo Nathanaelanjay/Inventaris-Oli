@@ -136,7 +136,7 @@
                                     <tr class="hover:bg-slate-50/70 transition-colors">
 
                                         <td class="px-6 py-3.5 text-xs text-slate-500">
-                                            {{ $i + 1 }}
+                                            {{ $barangMasuk->firstItem() + $i }}
                                         </td>
 
                                         <td class="px-6 py-3">
@@ -163,7 +163,7 @@
                                             Rp {{ number_format($b->harga_beli, 0, ',', '.') }}
                                         </td>
 
-                                        <td class="px-6 py-3 font-semibold text-red-600">
+                                        <td class="px-6 py-3 font-semibold text-emerald-600">
                                             Rp {{ number_format($b->total, 0, ',', '.') }}
                                         </td>
                                         <td class="px-6 py-4">

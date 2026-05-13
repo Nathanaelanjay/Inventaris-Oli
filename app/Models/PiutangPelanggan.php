@@ -18,8 +18,7 @@ class PiutangPelanggan extends Model
         'tanggal_transaksi',
         'tanggal_jatuh_tempo',
         'tanggal_bayar_terakhir',
-        'status',
-        'keterangan'
+        'status'
     ];
 
     public function barangKeluar()
