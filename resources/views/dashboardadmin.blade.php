@@ -29,7 +29,16 @@
             </div>
         </div>
 
+
         <div class="p-8 space-y-6">
+            <!-- Flash Messages -->
+            @if(session('success'))
+                <div
+                    class="mb-5 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl">
+                    <i class="fas fa-circle-check text-emerald-500"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
             <!-- HIGHLIGHT CARDS -->
             <div class="grid grid-cols-2 gap-5">
 

@@ -28,21 +28,30 @@
                 </p>
             </div>
             <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-100">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    <span class="text-xs font-semibold text-amber-700">{{ $produkMenipis }} produk stok menipis</span>
-                </div>
-                <button
-                    class="flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90 active:scale-95"
-                    style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
-                    <i class="fas fa-envelope w-4 h-4"></i>
-                    Kirim Email Stok
-                </button>
+                <form action="{{ route('produk.kirimEmailStok') }}" method="POST">
+                    @csrf
+
+                    <button type="submit"
+                        class="flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90 active:scale-95"
+                        style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+
+                        <i class="fas fa-envelope w-4 h-4"></i>
+
+                        Kirim Email Stok
+                    </button>
+                </form>
             </div>
         </div>
 
         <!-- Page Content -->
         <div class="px-8 py-7 space-y-7">
+            @if(session('success'))
+                <div
+                    class="mb-5 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl">
+                    <i class="fas fa-circle-check text-emerald-500"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <!-- Stat Cards -->
             <div class="grid grid-cols-4 gap-5">

@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
 use App\Helpers\LogHelper;
+use Illuminate\Support\Facades\Mail;
 
 class ProdukController extends Controller
 {
@@ -147,5 +148,36 @@ class ProdukController extends Controller
 
         return redirect()->route('produk.index')
             ->with('success', 'Produk berhasil dihapus');
+    }
+
+    public function kirimEmailStok()
+    {
+        $produkMinimum = Produk::whereColumn('stok', '<=', 'stok_minimum')->get();
+
+        if ($produkMinimum->isEmpty()) {
+            return back()->with('success', 'Tidak ada stok minimum');
+        }
+
+        Mail::raw(
+            $this->formatEmailStok($produkMinimum),
+            function ($message) {
+                $message->to('tritunggalinventarisoli@gmail.com')
+                    ->subject('Peringatan Stok Minimum Produk');
+            }
+        );
+
+        return redirect()->back()
+        ->with('success', 'Email stok minimum berhasil dikirim');
+    }
+    private function formatEmailStok($produk)
+    {
+        $text = "Daftar Produk Stok Minimum\n\n";
+
+        foreach ($produk as $p) {
+            $text .=
+                "- {$p->nama_barang} | Stok: {$p->stok} | Minimum: {$p->stok_minimum}\n";
+        }
+
+        return $text;
     }
 }

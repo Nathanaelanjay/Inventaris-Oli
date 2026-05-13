@@ -45,6 +45,10 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+// KIRIM EMAIL 
+Route::post('/produk/kirim-email-stok', [ProdukController::class, 'kirimEmailStok'])
+    ->name('produk.kirimEmailStok');
+
 // KATEGORI
 Route::resource('kategori', KategoriController::class);
 
