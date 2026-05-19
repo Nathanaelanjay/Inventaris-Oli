@@ -200,7 +200,7 @@
                                             <button onclick="openEdit(this)" data-id="{{ $b->barang_keluar_id }}"
                                                 data-produk="{{ $b->produk_id }}" data-pelanggan="{{ $b->pelanggan_id }}"
                                                 data-jumlah="{{ $b->jumlah }}" data-harga="{{ $b->harga_jual }}"
-                                                data-total="{{ $b->total }}"
+                                                data-total="{{ $b->total }}" data-status="{{ $b->piutang->status ?? 'lunas' }}"
                                                 class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100 transition-colors">
                                                 <i class="fas fa-pen text-[10px]"></i>
                                                 Edit
@@ -448,7 +448,7 @@
                     <label class="text-xs text-slate-500">Status Pembayaran</label>
                     <select name="status_pembayaran" id="e_status_pembayaran" onchange="toggleJatuhTempoEdit()"
                         class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
-
+                        <option value="">-- Pilih Pembayaran --</option>
                         <option value="lunas">Lunas</option>
                         <option value="hutang">Hutang</option>
 
@@ -527,6 +527,7 @@
             let harga = btn.dataset.harga;
             let total = btn.dataset.total;
             let pelanggan = btn.dataset.pelanggan;
+            let status = btn.dataset.status;
 
             document.getElementById('editForm').action = `/barangkeluar/${id}`;
             document.getElementById('e_produk').value = produk;
@@ -539,6 +540,9 @@
             document.getElementById('e_total_view').value = formatRupiah(total);
 
             document.getElementById('e_pelanggan').value = pelanggan;
+            document.getElementById('e_status_pembayaran').value = status;
+
+            toggleJatuhTempoEdit();
         }
 
         function openModal(id) {

@@ -37,7 +37,7 @@
 
                         <i class="fas fa-envelope w-4 h-4"></i>
 
-                        Kirim Email Stok
+                        Kirim Email Laporan
                     </button>
                 </form>
             </div>

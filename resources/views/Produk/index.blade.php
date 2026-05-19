@@ -99,7 +99,16 @@
                         <span class="text-xs text-slate-400">{{ $produk->count() }} produk ditemukan</span>
                     </div>
                     <form method="GET" class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                            {{-- Search Produk --}}
+                            <div class="relative">
+                                <input type="text" name="search" value="{{ request('search') }}"
+                                    placeholder="Cari produk..."
+                                    class="w-full border border-slate-200 rounded-xl pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400">
+
+                                <i
+                                    class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            </div>
                             {{-- Filter Kategori --}}
                             <select name="kategori"
                                 class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400">

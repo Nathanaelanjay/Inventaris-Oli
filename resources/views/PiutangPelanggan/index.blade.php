@@ -155,10 +155,10 @@
 
                                                 @if($p->status != 'lunas')
                                                     <button onclick="openBayarModal(
-                                                                            {{ $p->piutang_id }},
-                                                                            '{{ addslashes(data_get($p, 'barangKeluar.pelanggan.nama_bengkel', '-')) }}',
-                                                                            {{ $p->sisa_piutang }}
-                                                                        )"
+                                                                                                    {{ $p->piutang_id }},
+                                                                                                    '{{ addslashes(data_get($p, 'barangKeluar.pelanggan.nama_bengkel', '-')) }}',
+                                                                                                    {{ $p->sisa_piutang }}
+                                                                                                )"
                                                         class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs rounded-lg">
 
                                                         <i class="fas fa-money-bill"></i>

@@ -19,7 +19,8 @@
     <main class="ml-64 min-h-screen">
 
         <!-- HEADER -->
-        <div class="bg-white border-b border-slate-100 px-8 py-5 flex items-center justify-between sticky top-0 z-10">
+        <div class="bg-white border-b border-slate-100 px-8 py-4 flex items-center justify-between sticky top-0 z-20"
+            style="box-shadow: 0 1px 12px rgba(0,0,0,0.04);">
             <div>
                 <h1 class="text-xl font-bold text-slate-800">Dashboard Super Admin</h1>
                 <p class="text-xs text-slate-400 mt-0.5">

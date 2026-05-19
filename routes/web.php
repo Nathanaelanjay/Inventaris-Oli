@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\BarangMasukController;
@@ -29,10 +28,6 @@ Route::resource('hutang-pembelian', HutangPembelianController::class);
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// REGISTER
-Route::get('/register', [RegisterController::class, 'showRegister']);
-Route::post('/register', [RegisterController::class, 'register']);
 
 // PROTECTED
 Route::middleware(['auth'])->group(function () {

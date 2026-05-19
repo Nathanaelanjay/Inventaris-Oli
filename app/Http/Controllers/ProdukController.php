@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\HutangPembelian;
+use App\Models\PiutangPelanggan;
 use App\Models\Kategori;
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
@@ -14,6 +16,11 @@ class ProdukController extends Controller
     public function index(Request $request)
     {
         $query = Produk::with(['kategori', 'pemasok']);
+
+        // SEARCH
+        if ($request->search) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        }
 
         // FILTER KATEGORI
         if ($request->kategori) {
@@ -30,7 +37,7 @@ class ProdukController extends Controller
             $query->orderBy('stok', $request->stok);
         }
 
-        $produk = $query->paginate(10);
+        $produk = $query->paginate(10)->withQueryString();
 
         $kategori = Kategori::all();
         $pemasok = Pemasok::all();
@@ -152,30 +159,124 @@ class ProdukController extends Controller
 
     public function kirimEmailStok()
     {
+        // STOK MINIMUM
         $produkMinimum = Produk::whereColumn('stok', '<=', 'stok_minimum')->get();
 
-        if ($produkMinimum->isEmpty()) {
-            return back()->with('success', 'Tidak ada stok minimum');
+        // HUTANG BELUM LUNAS
+        $hutang = HutangPembelian::with([
+            'barangMasuk.produk.pemasok'
+        ])
+            ->where('status', '!=', 'Lunas')
+            ->get();
+
+        // PIUTANG BELUM LUNAS
+        $piutang = PiutangPelanggan::where('status', '!=', 'Lunas')->get();
+
+        // CEK SEMUA KOSONG
+        if (
+            $produkMinimum->isEmpty() &&
+            $hutang->isEmpty() &&
+            $piutang->isEmpty()
+        ) {
+            return back()->with(
+                'success',
+                'Tidak ada notifikasi stok, hutang, atau piutang'
+            );
         }
 
         Mail::raw(
-            $this->formatEmailStok($produkMinimum),
+            $this->formatEmailLaporan(
+                $produkMinimum,
+                $hutang,
+                $piutang
+            ),
             function ($message) {
                 $message->to('tritunggalinventarisoli@gmail.com')
-                    ->subject('Peringatan Stok Minimum Produk');
+                    ->subject('Laporan Inventory, Hutang, dan Piutang');
             }
         );
 
         return redirect()->back()
-        ->with('success', 'Email stok minimum berhasil dikirim');
+            ->with(
+                'success',
+                'Email laporan berhasil dikirim'
+            );
     }
-    private function formatEmailStok($produk)
-    {
-        $text = "Daftar Produk Stok Minimum\n\n";
 
-        foreach ($produk as $p) {
-            $text .=
-                "- {$p->nama_barang} | Stok: {$p->stok} | Minimum: {$p->stok_minimum}\n";
+    private function formatEmailLaporan($produk, $hutang, $piutang)
+    {
+        $text = "LAPORAN INVENTORY TOKO OLI\n";
+        $text .= "=============================\n\n";
+
+        /*
+        |--------------------------------------------------------------------------
+        | STOK MINIMUM
+        |--------------------------------------------------------------------------
+        */
+        $text .= "STOK MINIMUM PRODUK\n";
+        $text .= "-----------------------------\n";
+
+        if ($produk->isEmpty()) {
+            $text .= "Tidak ada stok minimum\n";
+        } else {
+            foreach ($produk as $p) {
+                $text .=
+                    "- {$p->nama_barang} | Stok: {$p->stok} | Minimum: {$p->stok_minimum}\n";
+            }
+        }
+
+        $text .= "\n\n";
+
+        /*
+        |--------------------------------------------------------------------------
+        | HUTANG PEMBELIAN
+        |--------------------------------------------------------------------------
+        */
+        $text .= "HUTANG PEMBELIAN\n";
+        $text .= "-----------------------------\n";
+
+        if ($hutang->isEmpty()) {
+            $text .= "Tidak ada hutang pembelian\n";
+        } else {
+            foreach ($hutang as $h) {
+
+                $namaPemasok =
+                    $h->barangMasuk->produk->pemasok->nama_pemasok ?? '-';
+
+                $jatuhTempo =
+                    $h->tanggal_jatuh_tempo
+                    ? \Carbon\Carbon::parse($h->tanggal_jatuh_tempo)
+                        ->format('d-m-Y')
+                    : '-';
+
+                $text .=
+                    "- Hutang ke {$namaPemasok} | " .
+                    "Jatuh Tempo: {$jatuhTempo} | " .
+                    "Sisa: Rp " .
+                    number_format($h->sisa_hutang, 0, ',', '.') .
+                    "\n";
+            }
+        }
+
+        $text .= "\n\n";
+
+        /*
+        |--------------------------------------------------------------------------
+        | PIUTANG PELANGGAN
+        |--------------------------------------------------------------------------
+        */
+        $text .= "PIUTANG PELANGGAN\n";
+        $text .= "-----------------------------\n";
+
+        if ($piutang->isEmpty()) {
+            $text .= "Tidak ada piutang pelanggan\n";
+        } else {
+            foreach ($piutang as $p) {
+                $text .=
+                    "- Piutang ID: {$p->piutang_id} | Sisa: Rp " .
+                    number_format($p->sisa_piutang, 0, ',', '.') .
+                    " | Status: {$p->status}\n";
+            }
         }
 
         return $text;

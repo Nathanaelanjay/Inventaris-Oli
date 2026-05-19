@@ -45,7 +45,7 @@ class SuperAdminController extends Controller
         }
 
         // PAGINATION
-        $logs = $query->latest()->paginate(10);
+        $logs = $query->latest()->paginate(5);
 
         return view('dashboardadmin', compact(
             'totalAdmin',

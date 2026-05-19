@@ -77,12 +77,6 @@
                     </button>
                 </form>
 
-                <p class="text-sm text-center mt-6 text-slate-500">
-                    Belum punya akun?
-                    <a href="/register"
-                        class="text-blue-600 hover:text-blue-700 font-medium hover:underline transition">Register</a>
-                </p>
-
             </div>
 
         </div>
