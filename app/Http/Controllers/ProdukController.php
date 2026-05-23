@@ -184,7 +184,7 @@ class ProdukController extends Controller
             );
         }
 
-        Mail::raw(
+        Mail::html(
             $this->formatEmailLaporan(
                 $produkMinimum,
                 $hutang,
@@ -205,39 +205,110 @@ class ProdukController extends Controller
 
     private function formatEmailLaporan($produk, $hutang, $piutang)
     {
-        $text = "LAPORAN INVENTORY TOKO OLI\n";
-        $text .= "=============================\n\n";
+        $html = '
+    <div style="font-family: Arial, sans-serif; padding:20px; color:#333;">
+        
+        <h2 style="color:#2563eb;">
+            Laporan Inventory Toko Oli
+        </h2>
+
+        <p style="margin-bottom:30px;">
+            Berikut adalah laporan stok minimum, hutang pembelian,
+            dan piutang pelanggan terbaru.
+        </p>
+    ';
 
         /*
         |--------------------------------------------------------------------------
         | STOK MINIMUM
         |--------------------------------------------------------------------------
         */
-        $text .= "STOK MINIMUM PRODUK\n";
-        $text .= "-----------------------------\n";
+        $html .= '
+        <h3 style="color:#dc2626;">
+            Stok Minimum Produk
+        </h3>
+    ';
 
         if ($produk->isEmpty()) {
-            $text .= "Tidak ada stok minimum\n";
-        } else {
-            foreach ($produk as $p) {
-                $text .=
-                    "- {$p->nama_barang} | Stok: {$p->stok} | Minimum: {$p->stok_minimum}\n";
-            }
-        }
 
-        $text .= "\n\n";
+            $html .= '
+            <p>Tidak ada stok minimum.</p>
+        ';
+
+        } else {
+
+            $html .= '
+        <table 
+            border="1" 
+            cellpadding="10" 
+            cellspacing="0" 
+            width="100%"
+            style="border-collapse: collapse; margin-bottom:30px;"
+        >
+            <thead style="background:#f3f4f6;">
+                <tr>
+                    <th>Nama Produk</th>
+                    <th>Stok</th>
+                    <th>Stok Minimum</th>
+                </tr>
+            </thead>
+            <tbody>
+        ';
+
+            foreach ($produk as $p) {
+
+                $html .= '
+                <tr>
+                    <td>' . $p->nama_barang . '</td>
+                    <td align="center">' . $p->stok . '</td>
+                    <td align="center">' . $p->stok_minimum . '</td>
+                </tr>
+            ';
+            }
+
+            $html .= '
+            </tbody>
+        </table>
+        ';
+        }
 
         /*
         |--------------------------------------------------------------------------
         | HUTANG PEMBELIAN
         |--------------------------------------------------------------------------
         */
-        $text .= "HUTANG PEMBELIAN\n";
-        $text .= "-----------------------------\n";
+        $html .= '
+        <h3 style="color:#ea580c;">
+            Hutang Pembelian
+        </h3>
+    ';
 
         if ($hutang->isEmpty()) {
-            $text .= "Tidak ada hutang pembelian\n";
+
+            $html .= '
+            <p>Tidak ada hutang pembelian.</p>
+        ';
+
         } else {
+
+            $html .= '
+        <table 
+            border="1" 
+            cellpadding="10" 
+            cellspacing="0" 
+            width="100%"
+            style="border-collapse: collapse; margin-bottom:30px;"
+        >
+            <thead style="background:#f3f4f6;">
+                <tr>
+                    <th>Pemasok</th>
+                    <th>Jatuh Tempo</th>
+                    <th>Sisa Hutang</th>
+                </tr>
+            </thead>
+            <tbody>
+        ';
+
             foreach ($hutang as $h) {
 
                 $namaPemasok =
@@ -249,36 +320,98 @@ class ProdukController extends Controller
                         ->format('d-m-Y')
                     : '-';
 
-                $text .=
-                    "- Hutang ke {$namaPemasok} | " .
-                    "Jatuh Tempo: {$jatuhTempo} | " .
-                    "Sisa: Rp " .
-                    number_format($h->sisa_hutang, 0, ',', '.') .
-                    "\n";
+                $html .= '
+                <tr>
+                    <td>' . $namaPemasok . '</td>
+                    <td align="center">' . $jatuhTempo . '</td>
+                    <td align="right">
+                        Rp ' . number_format($h->sisa_hutang, 0, ',', '.') . '
+                    </td>
+                </tr>
+            ';
             }
-        }
 
-        $text .= "\n\n";
+            $html .= '
+            </tbody>
+        </table>
+        ';
+        }
 
         /*
-        |--------------------------------------------------------------------------
-        | PIUTANG PELANGGAN
-        |--------------------------------------------------------------------------
-        */
-        $text .= "PIUTANG PELANGGAN\n";
-        $text .= "-----------------------------\n";
+ |--------------------------------------------------------------------------
+ | PIUTANG PELANGGAN
+ |--------------------------------------------------------------------------
+ */
+        $html .= '
+    <h3 style="color:#16a34a;">
+        Piutang Pelanggan
+    </h3>
+';
 
         if ($piutang->isEmpty()) {
-            $text .= "Tidak ada piutang pelanggan\n";
+
+            $html .= '
+        <p>Tidak ada piutang pelanggan.</p>
+    ';
+
         } else {
+
+            $html .= '
+    <table 
+        border="1" 
+        cellpadding="10" 
+        cellspacing="0" 
+        width="100%"
+        style="border-collapse: collapse;"
+    >
+        <thead style="background:#f3f4f6;">
+            <tr>
+                <th>Nama Bengkel</th>
+                <th>Jatuh Tempo</th>
+                <th>Sisa Piutang</th>
+            </tr>
+        </thead>
+        <tbody>
+    ';
+
             foreach ($piutang as $p) {
-                $text .=
-                    "- Piutang ID: {$p->piutang_id} | Sisa: Rp " .
-                    number_format($p->sisa_piutang, 0, ',', '.') .
-                    " | Status: {$p->status}\n";
+
+                $namaBengkel =
+                    $p->barangKeluar->pelanggan->nama_bengkel ?? '-';
+
+                $jatuhTempo =
+                    $p->tanggal_jatuh_tempo
+                    ? \Carbon\Carbon::parse($p->tanggal_jatuh_tempo)
+                        ->format('d-m-Y')
+                    : '-';
+
+                $html .= '
+            <tr>
+                <td>' . $namaBengkel . '</td>
+
+                <td align="center">
+                    ' . $jatuhTempo . '
+                </td>
+
+                <td align="right">
+                    Rp ' . number_format($p->sisa_piutang, 0, ',', '.') . '
+                </td>
+            </tr>
+        ';
             }
+
+            $html .= '
+        </tbody>
+    </table>
+    ';
         }
 
-        return $text;
+        $html .= '
+    <p style="margin-top:40px; font-size:12px; color:#888;">
+        Email otomatis dari sistem Inventory Oli
+    </p>
+</div>
+';
+        return $html;
     }
 }

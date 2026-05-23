@@ -55,7 +55,6 @@ CREATE TABLE pemasok (
 -- ========================
 CREATE TABLE produk (
     produk_id INT AUTO_INCREMENT PRIMARY KEY,
-    kode_barang INT NOT NULL,
     nama_barang VARCHAR(255) NOT NULL,
     stok INT NOT NULL,
     stok_minimum INT NOT NULL,

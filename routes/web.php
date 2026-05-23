@@ -35,8 +35,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/dashboardadmin', [SuperAdminController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard.admin');
+        ->middleware('auth')
+        ->name('dashboard.admin');
 
 });
 
@@ -86,3 +86,6 @@ Route::get('/dashboardadmin', [SuperAdminController::class, 'index'])
 
 Route::post('/admin/store', [SuperAdminController::class, 'store'])
     ->name('admin.store');
+
+Route::delete('/log/hapus-lama', [SuperAdminController::class, 'hapusLogLama'])
+    ->name('log.hapus.lama');

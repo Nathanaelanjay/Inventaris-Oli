@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\LogAktivitas;
@@ -82,5 +83,21 @@ class SuperAdminController extends Controller
 
         return redirect()->route('dashboard.admin')
             ->with('success', 'Admin berhasil ditambahkan');
+    }
+
+    public function hapusLogLama(Request $request)
+    {
+        $hari = $request->hari;
+
+        LogAktivitas::where(
+            'created_at',
+            '<',
+            Carbon::now()->subDays($hari)
+        )->delete();
+
+        return back()->with(
+            'success',
+            "Log lebih dari {$hari} hari berhasil dihapus"
+        );
     }
 }

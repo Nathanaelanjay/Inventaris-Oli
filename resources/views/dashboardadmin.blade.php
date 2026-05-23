@@ -225,7 +225,55 @@
                         </div>
                     </div>
                 </form>
+                </form>
 
+                <!-- AUTO DELETE LOG -->
+                <div class="px-6 py-4 border-b border-slate-100 bg-red-50/40">
+
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-slate-700">
+                                Hapus Otomatis Log Lama
+                            </h3>
+
+                            <p class="text-xs text-slate-400 mt-0.5">
+                                Bersihkan log aktivitas yang sudah terlalu lama
+                            </p>
+                        </div>
+
+                        <form action="{{ route('log.hapus.lama') }}" method="POST"
+                            class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <select name="hari" class="border border-slate-200 rounded-xl px-4 py-2.5 text-sm
+                focus:outline-none focus:ring-2 focus:ring-red-500">
+
+                                <option value="10">Hapus log lebih dari 10 hari</option>
+                                <option value="30">Hapus log lebih dari 30 hari</option>
+                                <option value="60">Hapus log lebih dari 60 hari</option>
+                                <option value="90">Hapus log lebih dari 90 hari</option>
+
+                            </select>
+
+                            <button type="submit" onclick="return confirm('Yakin ingin menghapus log lama?')"
+                                class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">
+
+                                <i class="fas fa-trash mr-1"></i>
+                                Hapus Log
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- TABLE -->
+                <div class="overflow-x-auto max-h-[500px] overflow-y-auto"></div>
                 <!-- TABLE -->
                 <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
 
