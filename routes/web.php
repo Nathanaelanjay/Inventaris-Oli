@@ -87,5 +87,12 @@ Route::get('/dashboardadmin', [SuperAdminController::class, 'index'])
 Route::post('/admin/store', [SuperAdminController::class, 'store'])
     ->name('admin.store');
 
+Route::put('/admin/{id}', [SuperAdminController::class, 'update'])
+    ->name('admin.update');
+
+Route::delete('/admin/{id}', [SuperAdminController::class, 'destroy'])
+    ->name('admin.destroy');
+
 Route::delete('/log/hapus-lama', [SuperAdminController::class, 'hapusLogLama'])
     ->name('log.hapus.lama');
+

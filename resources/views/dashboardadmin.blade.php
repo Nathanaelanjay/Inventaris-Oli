@@ -82,62 +82,132 @@
 
             </div>
 
-            <!-- FORM TAMBAH ADMIN -->
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
-                <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                        <i class="fas fa-user-plus text-blue-500 text-xs"></i>
+                <!-- HEADER -->
+                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                            <i class="fas fa-users-gear text-blue-500 text-xs"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="font-semibold text-slate-800 text-sm">
+                                Manajemen Admin
+                            </h2>
+
+                            <p class="text-xs text-slate-400">
+                                Tambah, edit, dan hapus akun admin
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="font-semibold text-slate-800 text-sm">Tambah Admin Baru</h2>
-                        <p class="text-xs text-slate-400">Isi form di bawah untuk menambahkan akun admin</p>
-                    </div>
+
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold">
+                        {{ $admins->count() }} Admin
+                    </span>
+
                 </div>
 
-                <div class="p-6">
-                    <form action="{{ route('admin.store') }}" method="POST" class="grid grid-cols-3 gap-4">
-                        @csrf
+                <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
 
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-slate-600">Nama Lengkap</label>
-                            <div class="relative">
-                                <i
-                                    class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
-                                <input name="nama" placeholder="Masukkan nama"
-                                    class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                            </div>
-                        </div>
+                    <div>
+                        <h2 class="font-semibold text-slate-800 text-sm">
+                            Manajemen Admin
+                        </h2>
 
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-slate-600">Alamat Email</label>
-                            <div class="relative">
-                                <i
-                                    class="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
-                                <input name="email" type="email" placeholder="email@domain.com"
-                                    class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                            </div>
-                        </div>
+                        <p class="text-xs text-slate-400">
+                            Kelola akun admin sistem
+                        </p>
+                    </div>
 
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-slate-600">Password</label>
-                            <div class="relative">
-                                <i
-                                    class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
-                                <input name="password" type="password" placeholder="Minimal 5 karakter"
-                                    class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                            </div>
-                        </div>
+                    <button onclick="openModal('createAdminModal')"
+                        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium">
 
-                        <div class="col-span-3 pt-1">
-                            <button type="submit"
-                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors duration-200">
-                                <i class="fas fa-plus text-xs"></i>
-                                Tambah Admin
-                            </button>
-                        </div>
+                        <i class="fas fa-plus"></i>
+                        Tambah Admin
 
-                    </form>
+                    </button>
+
+                </div>
+
+                <!-- LIST ADMIN -->
+                <div class="overflow-x-auto">
+
+                    <table class="w-full text-sm">
+
+                        <thead class="bg-slate-50">
+
+                            <tr>
+                                <th class="px-6 py-3 text-left">#</th>
+                                <th class="px-6 py-3 text-left">Nama</th>
+                                <th class="px-6 py-3 text-left">Email</th>
+                                <th class="px-6 py-3 text-center">Aksi</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach($admins as $admin)
+
+                                <tr class="border-t border-slate-100">
+
+                                    <td class="px-6 py-4">
+                                        {{ $admins->firstItem() + $loop->index }}
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        {{ $admin->nama }}
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        {{ $admin->email }}
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-center gap-2">
+
+                                            <!-- EDIT -->
+                                            <button onclick="openEditAdmin(
+                                                                                '{{ $admin->user_id }}',
+                                                                                '{{ $admin->nama }}',
+                                                                                '{{ $admin->email }}'
+                                                                            )"
+                                                class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100">
+
+                                                <i class="fas fa-pen text-[10px]"></i>
+                                                Edit
+
+                                            </button>
+
+                                            <!-- DELETE -->
+                                            <form action="{{ route('admin.destroy', $admin->user_id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit" onclick="return confirm('Yakin hapus admin ini?')"
+                                                    class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-medium rounded-lg border border-red-100">
+
+                                                    <i class="fas fa-trash text-[10px]"></i>
+                                                    Hapus
+
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                    <div class="px-6 py-4 border-t border-slate-100">
+                        {{ $admins->withQueryString()->links() }}
+                    </div>
                 </div>
 
             </div>
@@ -452,8 +522,196 @@
         </div>
 
         </div>
-    </main>
+        <div id="createAdminModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
 
+            <div class="absolute inset-0 bg-black/50" onclick="closeModal('createAdminModal')"></div>
+
+            <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4">
+
+                <!-- HEADER -->
+                <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-user-plus text-blue-600 text-sm"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="text-base font-bold text-slate-800">
+                                Tambah Admin
+                            </h2>
+
+                            <p class="text-xs text-slate-400">
+                                Tambahkan akun admin baru
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <button onclick="closeModal('createAdminModal')"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100">
+
+                        <i class="fas fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- FORM -->
+                <form action="{{ route('admin.store') }}" method="POST" class="px-6 py-5 space-y-4">
+
+                    @csrf
+
+                    <input type="text" name="nama" placeholder="Nama Lengkap"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
+
+                    <input type="email" name="email" placeholder="Alamat Email"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
+
+                    <input type="password" name="password" placeholder="Password"
+                        class="w-full border rounded-xl px-3 py-2.5 text-sm" required>
+
+                    <div class="flex justify-end gap-2 pt-2">
+
+                        <button type="button" onclick="closeModal('createAdminModal')"
+                            class="px-4 py-2 rounded-xl border border-slate-200">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+        <div id="editAdminModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+
+            <div class="absolute inset-0 bg-black/50" onclick="closeModal('editAdminModal')"></div>
+
+            <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4">
+
+                <!-- HEADER -->
+                <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-pen text-amber-600 text-sm"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="text-base font-bold text-slate-800">
+                                Edit Admin
+                            </h2>
+
+                            <p class="text-xs text-slate-400">
+                                Perbarui data admin
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <button onclick="closeModal('editAdminModal')"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100">
+
+                        <i class="fas fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- FORM -->
+                <form method="POST" id="editAdminForm" class="px-6 py-5 space-y-4">
+
+                    @csrf
+                    @method('PUT')
+
+                    <!-- NAMA -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1.5">
+                            Nama Lengkap
+                        </label>
+
+                        <input type="text" id="edit_nama" name="nama"
+                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            required>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1.5">
+                            Alamat Email
+                        </label>
+
+                        <input type="email" id="edit_email" name="email"
+                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            required>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1.5">
+                            Password
+                        </label>
+
+                        <input type="password" name="password" placeholder="Kosongkan jika tidak diubah"
+                            class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2">
+
+                        <button type="button" onclick="closeModal('editAdminModal')"
+                            class="px-4 py-2 rounded-xl border border-slate-200">
+
+                            Batal
+
+                        </button>
+
+                        <button type="submit"
+                            class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm rounded-xl">
+
+                            Update
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </main>
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function openEditAdmin(id, nama, email) {
+            document.getElementById('edit_nama').value = nama;
+            document.getElementById('edit_email').value = email;
+
+            document.getElementById('editAdminForm').action =
+                `/admin/${id}`;
+
+            openModal('editAdminModal');
+        }
+    </script>
 </body>
 
 </html>

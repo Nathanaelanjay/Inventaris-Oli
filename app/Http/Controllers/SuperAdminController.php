@@ -45,14 +45,23 @@ class SuperAdminController extends Controller
             );
         }
 
-        // PAGINATION
+        // PAGINATION LOG
         $logs = $query->latest()->paginate(5);
+
+        // LIST ADMIN
+        $admins = User::with('role')
+            ->whereHas('role', function ($q) {
+                $q->where('nama_role', 'Admin');
+            })
+            ->latest()
+            ->paginate(5, ['*'], 'admins_page');
 
         return view('dashboardadmin', compact(
             'totalAdmin',
             'totalLog',
             'totalLogAll',
-            'logs'
+            'logs',
+            'admins'
         ));
     }
 
@@ -69,6 +78,13 @@ class SuperAdminController extends Controller
 
         $roleAdmin = Role::where('nama_role', 'Admin')->first();
 
+        if (!$roleAdmin) {
+            return back()->with(
+                'error',
+                'Role Admin tidak ditemukan'
+            );
+        }
+
         $user = User::create([
             'nama' => $request->nama,
             'email' => $request->email,
@@ -81,10 +97,69 @@ class SuperAdminController extends Controller
             'aktivitas' => 'Menambahkan admin baru: ' . $user->nama
         ]);
 
-        return redirect()->route('dashboard.admin')
-            ->with('success', 'Admin berhasil ditambahkan');
+        return back()->with(
+            'success',
+            'Admin berhasil ditambahkan'
+        );
     }
 
+    // ========================
+    // UPDATE ADMIN
+    // ========================
+    public function update(Request $request, $id)
+    {
+        $admin = User::findOrFail($id);
+
+        $request->validate([
+            'nama' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id . ',user_id',
+        ]);
+
+        $admin->nama = $request->nama;
+        $admin->email = $request->email;
+
+        if ($request->filled('password')) {
+            $admin->password = Hash::make($request->password);
+        }
+
+        $admin->save();
+
+        LogAktivitas::create([
+            'user_id' => auth()->user()->user_id,
+            'aktivitas' => 'Mengupdate admin: ' . $admin->nama
+        ]);
+
+        return back()->with(
+            'success',
+            'Admin berhasil diperbarui'
+        );
+    }
+
+    // ========================
+    // HAPUS ADMIN
+    // ========================
+    public function destroy($id)
+    {
+        $admin = User::findOrFail($id);
+
+        $namaAdmin = $admin->nama;
+
+        $admin->delete();
+
+        LogAktivitas::create([
+            'user_id' => auth()->user()->user_id,
+            'aktivitas' => 'Menghapus admin: ' . $namaAdmin
+        ]);
+
+        return back()->with(
+            'success',
+            'Admin berhasil dihapus'
+        );
+    }
+
+    // ========================
+    // HAPUS LOG LAMA
+    // ========================
     public function hapusLogLama(Request $request)
     {
         $hari = $request->hari;
