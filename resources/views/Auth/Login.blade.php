@@ -42,7 +42,20 @@
                         <span>{{ session('success') }}</span>
                     </div>
                 @endif
+                @if ($errors->any())
+                    <div
+                        class="flex items-start gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm">
 
+                        <i class="fas fa-triangle-exclamation mt-0.5"></i>
+
+                        <div>
+                            @foreach ($errors->all() as $error)
+                                <div>{{ $error }}</div>
+                            @endforeach
+                        </div>
+
+                    </div>
+                @endif
                 <form method="POST" action="/login" class="space-y-5">
                     @csrf
 

@@ -52,22 +52,6 @@
                 Produk
             </a>
 
-            <!-- Barang Masuk -->
-            <a href="/barang-masuk"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
-                {{ $isBarangMasuk ? 'text-white font-semibold bg-blue-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800' }}">
-                <i class="fas fa-arrows-up-down"></i>
-                Barang Masuk
-            </a>
-
-            <!-- Barang Keluar -->
-            <a href="/barang-keluar"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
-                {{ $isBarangKeluar ? 'text-white font-semibold bg-blue-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800' }}">
-                <i class="fas fa-exchange-alt"></i>
-                Barang Keluar
-            </a>
-
             <!-- Kategori -->
             <a href="/kategori"
                 class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
@@ -90,6 +74,22 @@
                 {{ $isPemasok ? 'text-white font-semibold bg-blue-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800' }}">
                 <i class="fas fa-users"></i>
                 Pemasok
+            </a>
+
+            <!-- Barang Masuk -->
+            <a href="/barang-masuk"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+                {{ $isBarangMasuk ? 'text-white font-semibold bg-blue-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800' }}">
+                <i class="fas fa-arrows-up-down"></i>
+                Barang Masuk
+            </a>
+
+            <!-- Barang Keluar -->
+            <a href="/barang-keluar"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all
+                {{ $isBarangKeluar ? 'text-white font-semibold bg-blue-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800' }}">
+                <i class="fas fa-exchange-alt"></i>
+                Barang Keluar
             </a>
 
             <!-- Piutang -->

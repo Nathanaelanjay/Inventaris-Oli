@@ -217,6 +217,23 @@ class ProdukController extends Controller
             dan piutang pelanggan terbaru.
         </p>
     ';
+        $tableStyle = '
+    border-collapse: collapse;
+    width: auto;
+    min-width: 500px;
+    font-size: 13px;
+    margin-bottom: 25px;
+';
+
+        $thStyle = '
+    padding: 6px 10px;
+    background: #f8fafc;
+    font-weight: 600;
+';
+
+        $tdStyle = '
+    padding: 6px 10px;
+';
 
         /*
         |--------------------------------------------------------------------------
@@ -224,53 +241,43 @@ class ProdukController extends Controller
         |--------------------------------------------------------------------------
         */
         $html .= '
-        <h3 style="color:#dc2626;">
-            Stok Minimum Produk
-        </h3>
-    ';
-
-        if ($produk->isEmpty()) {
-
-            $html .= '
-            <p>Tidak ada stok minimum.</p>
-        ';
-
-        } else {
-
-            $html .= '
-        <table 
-            border="1" 
-            cellpadding="10" 
-            cellspacing="0" 
-            width="100%"
-            style="border-collapse: collapse; margin-bottom:30px;"
+        <table
+            border="1"
+            cellpadding="0"
+            cellspacing="0"
+            style="' . $tableStyle . '"
         >
-            <thead style="background:#f3f4f6;">
+            <thead>
                 <tr>
-                    <th>Nama Produk</th>
-                    <th>Stok</th>
-                    <th>Stok Minimum</th>
+                    <th style="' . $thStyle . '">Nama Produk</th>
+                    <th style="' . $thStyle . '">Stok</th>
+                    <th style="' . $thStyle . '">Min</th>
                 </tr>
             </thead>
             <tbody>
         ';
 
-            foreach ($produk as $p) {
-
-                $html .= '
-                <tr>
-                    <td>' . $p->nama_barang . '</td>
-                    <td align="center">' . $p->stok . '</td>
-                    <td align="center">' . $p->stok_minimum . '</td>
-                </tr>
-            ';
-            }
+        foreach ($produk as $p) {
 
             $html .= '
+            <tr>
+                <td style="' . $tdStyle . '">' . $p->nama_barang . '</td>
+
+                <td align="center" style="' . $tdStyle . '">
+                    ' . $p->stok . '
+                </td>
+
+                <td align="center" style="' . $tdStyle . '">
+                    ' . $p->stok_minimum . '
+                </td>
+            </tr>
+            ';
+        }
+
+        $html .= '
             </tbody>
         </table>
         ';
-        }
 
         /*
         |--------------------------------------------------------------------------
@@ -294,10 +301,9 @@ class ProdukController extends Controller
             $html .= '
         <table 
             border="1" 
-            cellpadding="10" 
+            cellpadding="0" 
             cellspacing="0" 
-            width="100%"
-            style="border-collapse: collapse; margin-bottom:30px;"
+            style="' . $tableStyle . '"
         >
             <thead style="background:#f3f4f6;">
                 <tr>
@@ -359,10 +365,9 @@ class ProdukController extends Controller
             $html .= '
     <table 
         border="1" 
-        cellpadding="10" 
+        cellpadding="0" 
         cellspacing="0" 
-        width="100%"
-        style="border-collapse: collapse;"
+        style="' . $tableStyle . '"
     >
         <thead style="background:#f3f4f6;">
             <tr>
