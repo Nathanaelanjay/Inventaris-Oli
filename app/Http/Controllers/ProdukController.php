@@ -209,7 +209,7 @@ class ProdukController extends Controller
     <div style="font-family: Arial, sans-serif; padding:20px; color:#333;">
         
         <h2 style="color:#2563eb;">
-            Laporan Inventory Toko Oli
+            Laporan Inventory Oli Tritunggal
         </h2>
 
         <p style="margin-bottom:30px;">

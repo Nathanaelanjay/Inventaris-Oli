@@ -44,6 +44,10 @@ class SuperAdminController extends Controller
                 '%' . $request->aktivitas . '%'
             );
         }
+        // FILTER ADMIN
+        if ($request->filled('admin')) {
+            $query->where('user_id', $request->admin);
+        }
 
         // PAGINATION LOG
         $logs = $query->latest()->paginate(5);
@@ -65,15 +69,16 @@ class SuperAdminController extends Controller
         ));
     }
 
-    // ========================
-    // TAMBAH ADMIN
-    // ========================
     public function store(Request $request)
     {
+
         $request->validate([
             'nama' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6'
+        ], [
+            'email.unique' => 'Email sudah terdaftar sebagai admin.',
+            'password.min' => 'Password minimal 6 karakter.'
         ]);
 
         $roleAdmin = Role::where('nama_role', 'Admin')->first();
@@ -97,12 +102,12 @@ class SuperAdminController extends Controller
             'aktivitas' => 'Menambahkan admin baru: ' . $user->nama
         ]);
 
-        return back()->with(
-            'success',
-            'Admin berhasil ditambahkan'
-        );
+        return back()
+            ->withErrors([
+                'store_error' => 'Password minimal 6 karakter.'
+            ], 'store')
+            ->withInput();
     }
-
     // ========================
     // UPDATE ADMIN
     // ========================
@@ -110,11 +115,14 @@ class SuperAdminController extends Controller
     {
         $admin = User::findOrFail($id);
 
-        $request->validate([
+        $request->validateWithBag('edit', [
             'nama' => 'required',
             'email' => 'required|email|unique:users,email,' . $id . ',user_id',
+            'password' => 'nullable|min:6'
+        ], [
+            'email.unique' => 'Email sudah terdaftar sebagai admin.',
+            'password.min' => 'Password minimal 6 karakter.'
         ]);
-
         $admin->nama = $request->nama;
         $admin->email = $request->email;
 

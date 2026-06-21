@@ -40,6 +40,11 @@
                     {{ session('success') }}
                 </div>
             @endif
+            @if(session('error'))
+                <div class="mb-4 p-4 rounded-lg bg-red-100 border border-red-300 text-red-700">
+                    {{ session('error') }}
+                </div>
+            @endif
             <!-- HIGHLIGHT CARDS -->
             <div class="grid grid-cols-2 gap-5">
 
@@ -170,11 +175,12 @@
                                         <div class="flex items-center justify-center gap-2">
 
                                             <!-- EDIT -->
-                                            <button onclick="openEditAdmin(
-                                                                                '{{ $admin->user_id }}',
-                                                                                '{{ $admin->nama }}',
-                                                                                '{{ $admin->email }}'
-                                                                            )"
+                                            <button
+                                                onclick="openEditAdmin(
+                                                                                                                                    '{{ $admin->user_id }}',
+                                                                                                                                    '{{ $admin->nama }}',
+                                                                                                                                    '{{ $admin->email }}'
+                                                                                                                                )"
                                                 class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-medium rounded-lg border border-amber-100">
 
                                                 <i class="fas fa-pen text-[10px]"></i>
@@ -243,7 +249,7 @@
 
                 <form method="GET" class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
 
                         <!-- FILTER TANGGAL -->
                         <div>
@@ -279,6 +285,24 @@
                             </select>
                         </div>
 
+                        <div>
+                            <select name="admin"
+                                class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm
+                                focus:outline-none focus:ring-2 focus:ring-orange-500
+                                focus:border-transparent transition">
+
+                                <option value="">Semua Admin</option>
+
+                                @foreach ($admins as $admin)
+                                    <option value="{{ $admin->user_id }}"
+                                        {{ request('admin') == $admin->user_id ? 'selected' : '' }}>
+                                        {{ $admin->nama }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        </div>
+
                         {{-- BUTTON --}}
                         <div class="flex gap-3 w-full md:w-auto md:ml-auto">
                             <!-- Filter -->
@@ -294,7 +318,6 @@
                             </a>
                         </div>
                     </div>
-                </form>
                 </form>
 
                 <!-- AUTO DELETE LOG -->
@@ -557,8 +580,16 @@
                     </button>
 
                 </div>
-
                 <!-- FORM -->
+                @if ($errors->any() && !$errors->edit->any())
+                    <div class="mb-4 p-3 bg-red-100 text-red-700">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form action="{{ route('admin.store') }}" method="POST" class="px-6 py-5 space-y-4">
 
                     @csrf
@@ -591,7 +622,13 @@
                     </div>
 
                 </form>
-
+                @if ($errors->any() && !$errors->edit->any())
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            openModal('createAdminModal');
+                        });
+                    </script>
+                @endif
             </div>
 
         </div>
@@ -632,6 +669,15 @@
                 </div>
 
                 <!-- FORM -->
+                @if ($errors->edit->any())
+                    <div class="mb-4 p-3 bg-red-100 text-red-700">
+                        <ul>
+                            @foreach ($errors->edit->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form method="POST" id="editAdminForm" class="px-6 py-5 space-y-4">
 
                     @csrf
@@ -688,6 +734,14 @@
                     </div>
 
                 </form>
+
+                @if ($errors->edit->any())
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            openModal('editAdminModal');
+                        });
+                    </script>
+                @endif
 
             </div>
 
