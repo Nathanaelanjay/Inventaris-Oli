@@ -47,12 +47,6 @@ class BarangKeluarController extends Controller
             $query->where('pelanggan_id', $request->pelanggan);
         }
 
-        // FILTER PEMASOK
-        if ($request->pemasok) {
-            $query->whereHas('produk', function ($q) use ($request) {
-                $q->where('pemasok_id', $request->pemasok);
-            });
-        }
 
         $barangKeluar = $query->latest()->paginate(10);
 

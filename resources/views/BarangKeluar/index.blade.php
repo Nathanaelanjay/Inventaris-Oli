@@ -85,12 +85,16 @@
                                 @endforeach
                             </select>
 
-                            {{-- FILTER PEMASOK --}}
-                            <select name="pemasok" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm">
-                                <option value="">Semua Pemasok</option>
-                                @foreach($pemasok as $p)
-                                    <option value="{{ $p->pemasok_id }}" {{ request('pemasok') == $p->pemasok_id ? 'selected' : '' }}>
-                                        {{ $p->nama_pemasok }}
+                            {{-- FILTER PELANGGAN --}}
+                            <select name="pelanggan" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm">
+                                <option value="">Semua Pelanggan</option>
+
+                                @foreach($pelanggan as $p)
+                                    <option value="{{ $p->pelanggan_id }}"
+                                        {{ request('pelanggan') == $p->pelanggan_id ? 'selected' : '' }}>
+
+                                        {{ $p->nama_bengkel }}
+
                                     </option>
                                 @endforeach
                             </select>
